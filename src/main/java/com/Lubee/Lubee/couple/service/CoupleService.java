@@ -19,8 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
-import java.util.Date;
-import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -36,10 +34,15 @@ public class CoupleService {
 
     @Autowired
     private RedisTemplate<Long, String> redisTemplate;      // key-userid, value-lubeecode
-
     @Autowired
     private RedisTemplate<String, Long> reverseRedisTemplate;      // key-lubeecode, value-userid
 
+    /**
+     * <러비코드 생성>
+     *     - 10자리의 랜덤한 코드 생성
+     *     - Userid가 key인 redisTemplate 생성
+     *     - lubeecode가 key인 reverseRedisTemplate 생성
+     */
     @Transactional
     public ApiResponseDto<LubeeCodeResponse> generateLubeeCode(UserDetails userDetails) {
 
@@ -55,6 +58,11 @@ public class CoupleService {
         return ResponseUtils.ok(LubeeCodeResponse.of(lubeeCode), ErrorResponse.builder().status(200).message("요청 성공").build());
     }
 
+    /**
+     * <러비코드 조회>
+     *     - userId가 가지고 있는 러비코드 조회
+     *     - 생성된 러비코드가 없을시, 에러 반환
+     */
     @Transactional(readOnly = true)
     public ApiResponseDto<LubeeCodeResponse> findLubeeCode(Long userid) {
 
@@ -69,6 +77,11 @@ public class CoupleService {
         return ResponseUtils.ok(LubeeCodeResponse.of(lubeeCode), ErrorResponse.builder().status(200).message("요청 성공").build());
     }
 
+    /**
+     * <커플 연동>
+     *     - requester, receiver가 이미 커플인지 확인한 후 커플 연동
+     *     - 두 user가 커플 연결됐을 경우, DB에서 두 러비코드 삭제
+     */
     @Transactional
     public ApiResponseDto<Long> linkCouple(UserDetails userDetails, String inputCode) {
 
