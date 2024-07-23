@@ -1,7 +1,6 @@
 package com.Lubee.Lubee.calendar.service;
 
 import com.Lubee.Lubee.calendar.domain.Calendar;
-import com.Lubee.Lubee.calendar.dto.MonthlyTotalHoneyRequest;
 import com.Lubee.Lubee.calendar.repository.CalendarRepository;
 import com.Lubee.Lubee.common.api.ApiResponseDto;
 import com.Lubee.Lubee.common.api.ErrorResponse;
@@ -18,7 +17,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -96,13 +94,13 @@ public class CalendarService {
      *     - 해당 년/월에 만들어진 memory가 없으면 0 반환
      */
     @Transactional(readOnly = true)
-    public ApiResponseDto<Integer> getMonthlyHoneyByUser(UserDetails userDetails, MonthlyTotalHoneyRequest monthlyTotalHoneyRequest) {
+    public ApiResponseDto<Integer> getMonthlyHoneyByUser(UserDetails userDetails, int year, int month) {
 
         final User user = userRepository.findUserByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new RestApiException(ErrorType.NOT_FOUND_USER));
         final Couple couple = coupleRepository.findCoupleByUser(user)
                 .orElseThrow(() -> new RestApiException(ErrorType.NOT_FOUND_COUPLE));
-        List<Calendar> calendars = calendarRepository.findAllByCoupleAndYearAndMonth(couple, monthlyTotalHoneyRequest.getYear(), monthlyTotalHoneyRequest.getMonth());
+        List<Calendar> calendars = calendarRepository.findAllByCoupleAndYearAndMonth(couple, year, month);
 
         int monthHoney = 0;
         if (!calendars.isEmpty()) {     // calendar 리스트가 비어있지 않으면 월별 honey 개수 세기
@@ -117,8 +115,5 @@ public class CalendarService {
                 ErrorResponse.builder().status(200).message("요청 성공").build()
         );
     }
-
-
-
 
 }

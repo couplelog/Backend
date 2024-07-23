@@ -2,7 +2,6 @@ package com.Lubee.Lubee.calendar.controller;
 
 import com.Lubee.Lubee.calendar.dto.CalendarMemoryDayDto;
 import com.Lubee.Lubee.calendar.dto.CalendarMemoryTotalListDto;
-import com.Lubee.Lubee.calendar.dto.MonthlyTotalHoneyRequest;
 import com.Lubee.Lubee.calendar.repository.CalendarRepository;
 import com.Lubee.Lubee.calendar.service.CalendarService;
 import com.Lubee.Lubee.calendar_memory.service.CalendarMemoryService;
@@ -58,16 +57,15 @@ public class CalendarController {
     /**
      * 커플의 월별 꿀 조회
      *
-     * @param userDetails 인증된 사용자의 정보를 담고 있는 UserDetails 객체
-     * @param monthlyTotalHoneyRequest 원하는 년/월을 integer 값으로
      * @return ApiResponseDto<Integer>  커플이 가진 전체 꿀 개수
      */
     @GetMapping("/honey/month")
     public ApiResponseDto<Integer> getMonthHoney(
             @AuthenticationPrincipal UserDetails userDetails,
-            @RequestBody final MonthlyTotalHoneyRequest monthlyTotalHoneyRequest){
+            @RequestParam int year,
+            @RequestParam int month){
 
-        return calendarService.getMonthlyHoneyByUser(userDetails, monthlyTotalHoneyRequest);
+        return calendarService.getMonthlyHoneyByUser(userDetails, year, month);
     }
 
     /**
