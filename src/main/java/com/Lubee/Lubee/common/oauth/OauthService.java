@@ -63,7 +63,7 @@ public class OauthService {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection(); // 실제 서버와의 연결을 설정 + 반환된 객체를 HttpURLConnection으로 캐스팅
 
             // POST 요청을 위해 기본값이 false인 setDoOutput을 true로 설정
-            conn.setRequestMethod("GET");
+            conn.setRequestMethod("POST");
             conn.setDoOutput(true); // 객체에서 출력 스트림을 사용할 것인지를 설정하는 메서드 -> 서버로 데이터를 보낼 때 사용
 
             // POST 요청에 필요로 요구하는 파라미터를 스트림을 통해 전송
