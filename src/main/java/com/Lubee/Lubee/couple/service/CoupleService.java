@@ -1,7 +1,6 @@
 package com.Lubee.Lubee.couple.service;
 
 import com.Lubee.Lubee.anniversary.dto.AnniversaryListDto;
-import com.Lubee.Lubee.anniversary.repository.AnniversaryRepository;
 import com.Lubee.Lubee.anniversary.service.AnniversaryService;
 import com.Lubee.Lubee.common.api.ApiResponseDto;
 import com.Lubee.Lubee.common.api.ErrorResponse;
@@ -27,8 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Duration;
 import java.util.UUID;
 import java.util.*;
-
-import static java.lang.Boolean.TRUE;
 
 @Service
 @RequiredArgsConstructor
@@ -71,25 +68,6 @@ public class CoupleService {
 
         return ResponseUtils.ok(LubeeCodeResponse.of(lubeeCode), ErrorResponse.builder().status(200).message("요청 성공").build());
     }
-
-    /**
-     * <러비코드 조회>
-     *     - userId가 가지고 있는 러비코드 조회
-     *     - 생성된 러비코드가 없을시, 에러 반환
-     */
-    /*@Transactional(readOnly = true)
-    public ApiResponseDto<LubeeCodeResponse> findLubeeCode(Long userid) {
-
-        final User user = userRepository.findById(userid)
-                .orElseThrow(() -> new RestApiException(ErrorType.NOT_FOUND_USER));
-
-        String lubeeCode = redisTemplate.opsForValue().get(user.getId());
-        if (lubeeCode == null) {
-            throw new RestApiException(ErrorType.LUBEE_CODE_NOT_FOUND);
-        }
-
-        return ResponseUtils.ok(LubeeCodeResponse.of(lubeeCode), ErrorResponse.builder().status(200).message("러비코드 조회 성공").build());
-    }*/
 
     /**
      * <커플 연동>
