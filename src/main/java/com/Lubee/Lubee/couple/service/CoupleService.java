@@ -58,6 +58,10 @@ public class CoupleService {
         final User user = userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new RestApiException(ErrorType.NOT_FOUND_USER));
 
+        if(user.isAlreadyCouple()){     // user가 이미 커플이면 러비코드 조회, 생성 불가능
+            throw new RestApiException(ErrorType.ALREADY_COUPLE);
+        }
+
         String lubeeCode = redisTemplate.opsForValue().get(user.getId());
         if (lubeeCode == null) {        // 기존에 lubeecode 없으면 새로 생성
             lubeeCode = UUID.randomUUID().toString().replace("-", "").substring(0, 10);
