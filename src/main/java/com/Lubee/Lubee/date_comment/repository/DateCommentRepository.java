@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public interface DateCommentRepository extends JpaRepository<DateComment, Long> {
 
@@ -18,5 +19,9 @@ public interface DateCommentRepository extends JpaRepository<DateComment, Long> 
 
     @Query("SELECT dc FROM DateComment dc WHERE dc.couple = :couple AND dc.calendar.eventDate = :eventDate")
     List<DateComment> findByCoupleAndCalendarEventDate(@Param("couple") Couple couple, @Param("eventDate") Date eventDate);
+
+    // 유저가해당 날짜에 이미 데이트코멘트를 작성했는지 확인
+    Optional<DateComment> findByUserAndCoupleAndCalendar_EventDate(User user, Couple couple, Date eventDate);
+
 
 }

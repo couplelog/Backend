@@ -4,15 +4,15 @@ import com.Lubee.Lubee.common.api.ApiResponseDto;
 import com.Lubee.Lubee.common.api.SuccessResponse;
 import com.Lubee.Lubee.date_comment.dto.CreateDateCommentRequest;
 import com.Lubee.Lubee.date_comment.dto.TodayDateCommentResponse;
-import com.Lubee.Lubee.date_comment.dto.TodayCoupleDateCommentRequest;
 import com.Lubee.Lubee.date_comment.dto.UpdateDateCommentRequest;
 import com.Lubee.Lubee.date_comment.service.DateCommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Date;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,15 +40,17 @@ public class DateCommentController {
      * 커플의 데이트코멘트 조회 (날짜 하루)
      *
      * @param userDetails 인증된 사용자의 정보를 담고 있는 UserDetails 객체
-     * @param todayCoupleDateCommentRequest 해당 날짜에 작성된 커플의 데이트코멘트 요청 dto (userId, coupleId, date)
+     * @param coupleId   커플 아이디
+     * @param date   원하는 날짜
      * @return List<DateCommentResponse>
      */
     @GetMapping("/today")
     public ApiResponseDto<TodayDateCommentResponse> findTodayDateCommentByCouple(
             @AuthenticationPrincipal UserDetails userDetails,
-            @RequestBody final TodayCoupleDateCommentRequest todayCoupleDateCommentRequest){
+            @RequestParam Long coupleId,
+            @RequestParam @DateTimeFormat(pattern = "yyyy.MM.dd") Date date){
 
-        return dateCommentService.findTodayDateCommentByCouple(userDetails, todayCoupleDateCommentRequest);
+        return dateCommentService.findTodayDateCommentByCouple(userDetails, coupleId, date);
     }
 
     /**

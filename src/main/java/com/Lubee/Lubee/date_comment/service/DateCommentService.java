@@ -21,7 +21,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,11 +52,18 @@ public class DateCommentService {
         // 캘린더가 없으면 해당 날짜의 캘린더를 생성
         Calendar calendar = calendarRepository.findByCoupleAndEventDate(couple, createDateCommentRequest.getDate());
         if (calendar == null) {
+            log.info("캘린더가 존재하지 않아, 새롭게 캘린더를 생성했습니다.");
             calendar = Calendar.builder()
                     .couple(couple)
                     .eventDate(createDateCommentRequest.getDate())
                     .build();
             calendarRepository.save(calendar);
+        }
+        else{
+            // 해당 날짜에 이미 작성한 데이트코멘트가 있으면...
+            if(dateCommentRepository.findByUserAndCoupleAndCalendar_EventDate(user, couple, createDateCommentRequest.getDate()).isPresent()) {
+                throw new RestApiException(ErrorType.DATE_COMMENT_ALREADY_EXIST);
+            }
         }
 
         DateComment dateComment = DateComment.builder()
@@ -80,18 +86,18 @@ public class DateCommentService {
      *     - (3) 둘다 작성 o => 둘의 데이트코멘트 모두 반환
      */
     @Transactional(readOnly = true)
-    public ApiResponseDto<TodayDateCommentResponse> findTodayDateCommentByCouple(UserDetails userDetails, TodayCoupleDateCommentRequest todayCoupleDateCommentRequest) {
+    public ApiResponseDto<TodayDateCommentResponse> findTodayDateCommentByCouple(UserDetails userDetails, Long coupleId, Date date) {
 
         final User user = userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new RestApiException(ErrorType.NOT_FOUND_USER));
 
-        final Couple couple = coupleRepository.findById(todayCoupleDateCommentRequest.getCoupleId())
+        final Couple couple = coupleRepository.findById(coupleId)
                 .orElseThrow(() -> new RestApiException(ErrorType.NOT_FOUND_COUPLE));
-        if (!couple.getId().equals(todayCoupleDateCommentRequest.getCoupleId())) {    // 커플id가 잘못됐을 때
+        if (!couple.getId().equals(coupleId)) {    // 커플id가 잘못됐을 때
             throw new RestApiException(ErrorType.NOT_MATCHING_COUPLE);
         }
 
-        final Calendar calendar = calendarRepository.findByCoupleAndEventDate(couple, todayCoupleDateCommentRequest.getDate());
+        final Calendar calendar = calendarRepository.findByCoupleAndEventDate(couple, date);
         if (calendar == null) {               // 커플이 해당 달력을 만들지 않았으면..
             throw new RestApiException(ErrorType.NOT_FOUND_CALENDAR);
         }
