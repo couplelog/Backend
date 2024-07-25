@@ -59,7 +59,8 @@ public enum ErrorType {
     LOCATION_NOT_FOUND(404, "검색된 위치 데이터가 없습니다"),
     TODAY_MEMORY_END(400, "이미 5개의 허니를 채웠습니다"),
     DATE_COMMENT_ALREADY_EXIST(400, "해당 날짜에 데이트코멘트를 이미 작성했습니다."),
-    ALREADY_COUPLE(400, "해당 사용자는 이미 커플입니다.")
+    ALREADY_COUPLE(400, "해당 사용자는 이미 커플입니다."),
+    NOT_COUPLE(400, "해당 유저는 커플이 아닙니다"),
     ;
 
 

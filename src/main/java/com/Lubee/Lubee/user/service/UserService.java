@@ -46,6 +46,10 @@ public class UserService {
         Couple couple = coupleRepository.findCoupleByUser(user).orElseThrow(
                 () -> new RestApiException(ErrorType.NOT_FOUND_COUPLE)
         );
+        if (couple == null)
+        {
+            throw new RestApiException(ErrorType.NOT_COUPLE);
+        }
         couple.setStartDate(signupDto.getStartDate());
         userRepository.save(user);
         coupleRepository.save(couple);
