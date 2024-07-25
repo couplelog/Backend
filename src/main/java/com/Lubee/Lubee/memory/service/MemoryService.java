@@ -199,7 +199,7 @@ public class MemoryService {
                 // UserCalendarMemory 생성 및 저장
                 UserCalendarMemory userCalendarMemory = UserCalendarMemory.of(user, calendarMemory);
                 userCalendarMemoryRepository.save(userCalendarMemory);
-
+                memoryRepository.save(memory);
                 // 커플의 총 허니를 증가시키고 저장
                 couple.setTotal_honey(couple.getTotal_honey() + 1);
                 coupleRepository.save(couple);
