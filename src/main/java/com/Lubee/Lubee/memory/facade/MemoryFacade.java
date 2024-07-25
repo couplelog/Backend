@@ -77,18 +77,8 @@ public class MemoryFacade {
             // 유저의 꿀 개수 계산
             int honey = memoryList.size();
 
-            // 커플 프로필 정보 가져오기
-            List<Profile> profileList = coupleService.getCouplesProfile(couple);
-
-            // 커플과 캘린더로 데이트 코멘트 조회
-            List<DateCommentBaseDto> dateCommentBaseDtos = dateCommentService.getDateCommentsByCoupleAndCalendar(couple, today_date);
-
-            // memory에서 메모리 정보 가져오기
-            List<UserCalendarMemory> userCalendarMemories = userCalendarMemoryRepository.findByUserAndMemoryDate(user, today_date);
-            List<MemoryBaseDto> memoryBaseDtoList = memoryService.getMemoryBase(userCalendarMemories);
-
             // HomeDto 객체 생성 및 설정
-            HomeDto homeDto = new HomeDto(today_date, loveDays, honey, profileList, dateCommentBaseDtos, memoryBaseDtoList);
+            HomeDto homeDto = new HomeDto(today_date, loveDays, honey);
 
             // ApiResponseDto 객체 반환
             return ResponseUtils.ok(homeDto, null);
