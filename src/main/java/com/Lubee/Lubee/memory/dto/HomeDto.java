@@ -16,10 +16,5 @@ import java.util.List;
 @Getter
 public class HomeDto {
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date today;
-
     private Long love_day;
-    private int honey;
-
 }

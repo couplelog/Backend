@@ -78,7 +78,7 @@ public class MemoryFacade {
             int honey = memoryList.size();
 
             // HomeDto 객체 생성 및 설정
-            HomeDto homeDto = new HomeDto(today_date, loveDays, honey);
+            HomeDto homeDto = new HomeDto(loveDays);
 
             // ApiResponseDto 객체 반환
             return ResponseUtils.ok(homeDto, null);
