@@ -5,6 +5,7 @@ import com.Lubee.Lubee.calendar.domain.Calendar;
 import com.Lubee.Lubee.common.BaseEntity;
 import com.Lubee.Lubee.memory.domain.Memory;
 import com.Lubee.Lubee.user.domain.User;
+import com.Lubee.Lubee.user_calendar_memory.domain.UserCalendarMemory;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -30,6 +31,9 @@ public class CalendarMemory extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "memory_id", nullable = false)
     private Memory memory;
+
+    @OneToMany(mappedBy = "calendarMemory", cascade = CascadeType.ALL)
+    private List<UserCalendarMemory> userCalendarMemories;
 
     @Builder
     public CalendarMemory(Calendar calendar, Memory memory) {

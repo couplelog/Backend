@@ -108,7 +108,7 @@ public class MemoryFacade {
         }
     }
 
-    public ApiResponseDto<SuccessResponse> createMemory(UserDetails loginUser, MultipartFile file, Long location_id)
+    public ApiResponseDto<SuccessResponse> createMemory(UserDetails loginUser, MultipartFile file, Long location_id, int year, int month, int day)
     {
 
         // memory 생성, calendar 도 생성, memory_calendar도 생성해준다
@@ -116,7 +116,7 @@ public class MemoryFacade {
         Couple couple = coupleService.getCoupleByUser(user);
         couple.setTotal_honey(couple.getTotal_honey()+1);
         coupleRepository.save(couple);
-        memoryService.createMemory(loginUser, file,location_id);
+        memoryService.createMemory(loginUser, file,location_id, year, month, day);
         return ResponseUtils.ok(SuccessResponse.of(HttpStatus.OK, "Memory 생성이 완료되었습니다"), ErrorResponse.builder().status(200).message("요청 성공").build());
     }
 

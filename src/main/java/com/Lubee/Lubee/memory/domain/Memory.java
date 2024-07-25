@@ -52,10 +52,13 @@ public class Memory extends BaseEntity {
     @JoinColumn(name = "couple_id", nullable = false)
     private Couple couple;
 
-    @OneToMany(mappedBy = "memory")
+    @OneToMany(mappedBy = "memory", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserMemory> userMemories;
+
+    @OneToMany(mappedBy = "memory", cascade = CascadeType.ALL)
     private List<CalendarMemory> calendarMemories;
 
-    @OneToMany(mappedBy = "memory")
+    @OneToMany(mappedBy = "memory", cascade = CascadeType.ALL)
     private List<UserMemoryReaction> userMemoryReactions;
 
 }

@@ -2,6 +2,7 @@ package com.Lubee.Lubee.memory.service;
 
 import com.Lubee.Lubee.calendar.domain.Calendar;
 import com.Lubee.Lubee.calendar.repository.CalendarRepository;
+import com.Lubee.Lubee.calendar.service.CalendarService;
 import com.Lubee.Lubee.calendar_memory.domain.CalendarMemory;
 import com.Lubee.Lubee.calendar_memory.repository.CalendarMemoryRepository;
 import com.Lubee.Lubee.common.enumSet.ErrorType;
@@ -65,6 +66,7 @@ public class MemoryService {
     private final CalendarMemoryRepository calendarMemoryRepository;
     private final UserCalendarMemoryRepository userCalendarMemoryRepository;
     private final LocationRepository locationRepository;
+    private final CalendarService calendarService;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -128,7 +130,7 @@ public class MemoryService {
     }
 
     @Transactional
-    public void createMemory(UserDetails loginUser, MultipartFile file, Long location_id) {
+    public void createMemory(UserDetails loginUser, MultipartFile file, Long location_id, int year, int month, int day) {
         // 사용자 정보 가져오기
         User user = userRepository.findByUsername(loginUser.getUsername()).orElseThrow(
                 () -> new RestApiException(ErrorType.NOT_FOUND_USER)
@@ -140,10 +142,6 @@ public class MemoryService {
         // 파일 업로드 처리
         if (file != null && !file.isEmpty()) {
             try {
-                LocalDate today = LocalDate.now();
-                int year = today.getYear();
-                int month = today.getMonthValue();
-                int day = today.getDayOfMonth();
                 List<Memory> memoryList = memoryRepository.findAllByCoupleAndYearAndMonthAndDay(couple, year, month, day);
                 if (memoryList.size() >=5)
                 {
@@ -164,24 +162,25 @@ public class MemoryService {
                         () -> new RestApiException(ErrorType.NOT_FOUND_LOCATION)
                 );
 
-                // 오늘 날짜를 가져옵니다.
-                Date today_date = new Date();
-
+                int calenderMonth = calendarService.getCalendarMonth(month);
+                java.util.Calendar calendar_type = java.util.Calendar.getInstance();
+                calendar_type.set(year, calenderMonth, day); // month - 1: 0-based month 사용
+                Date date = calendar_type.getTime();
                 // 메모리 객체 생성 및 저장
                 Memory memory = new Memory();
                 memory.setLocation(location);
-                memory.setTime(today_date); // 현재 날짜 설정
+                memory.setTime(date); // 현재 날짜 설정
                 memory.setPicture(fileUrl);
                 memory.setCouple(couple);
 
                 memory = memoryRepository.save(memory);
 
                 // Calendar 존재 확인 및 생성
-                Calendar calendar = calendarRepository.findByCoupleAndEventDate(couple, today_date);
+                Calendar calendar = calendarRepository.findByCoupleAndEventDate(couple, date);
                 if (calendar == null) {
                     calendar = Calendar.builder()
                             .couple(couple)
-                            .eventDate(today_date)
+                            .eventDate(date)
                             .build();
                     calendar = calendarRepository.save(calendar);
                 }

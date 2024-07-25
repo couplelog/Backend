@@ -12,6 +12,9 @@ import java.util.Date;
 @Builder
 @Getter
 public class MemoryCreateRequestDto {
-    Long location_id;
-    MultipartFile picture;
+    private  Long location_id;
+    private MultipartFile picture;
+    private int year;
+    private int month;
+    private int day;
 }

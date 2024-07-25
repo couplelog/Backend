@@ -115,5 +115,22 @@ public class CalendarService {
                 ErrorResponse.builder().status(200).message("요청 성공").build()
         );
     }
+    public int getCalendarMonth(int month) {
+        return switch (month) {
+            case 1 -> java.util.Calendar.JANUARY;
+            case 2 -> java.util.Calendar.FEBRUARY;
+            case 3 -> java.util.Calendar.MARCH;
+            case 4 -> java.util.Calendar.APRIL;
+            case 5 -> java.util.Calendar.MAY;
+            case 6 -> java.util.Calendar.JUNE;
+            case 7 -> java.util.Calendar.JULY;
+            case 8 -> java.util.Calendar.AUGUST;
+            case 9 -> java.util.Calendar.SEPTEMBER;
+            case 10 -> java.util.Calendar.OCTOBER;
+            case 11 -> java.util.Calendar.NOVEMBER;
+            case 12 -> java.util.Calendar.DECEMBER;
+            default -> throw new IllegalArgumentException("Invalid month: " + month);
+        };
+    }
 
 }

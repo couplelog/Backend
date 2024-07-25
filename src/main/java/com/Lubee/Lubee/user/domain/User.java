@@ -60,7 +60,7 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     private List<DateComment> dateComments;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<UserMemory> userMemories;
 
     @OneToMany(mappedBy = "user")

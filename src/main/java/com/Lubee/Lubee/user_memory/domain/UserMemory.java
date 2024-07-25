@@ -2,9 +2,12 @@ package com.Lubee.Lubee.user_memory.domain;
 
 import com.Lubee.Lubee.memory.domain.Memory;
 import com.Lubee.Lubee.user.domain.User;
+import com.Lubee.Lubee.user_calendar_memory.domain.UserCalendarMemory;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Getter
