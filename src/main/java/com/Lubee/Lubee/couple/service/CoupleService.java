@@ -5,6 +5,7 @@ import com.Lubee.Lubee.anniversary.service.AnniversaryService;
 import com.Lubee.Lubee.common.api.ApiResponseDto;
 import com.Lubee.Lubee.common.api.ErrorResponse;
 import com.Lubee.Lubee.common.api.ResponseUtils;
+import com.Lubee.Lubee.common.api.SuccessResponse;
 import com.Lubee.Lubee.common.enumSet.ErrorType;
 import com.Lubee.Lubee.common.exception.RestApiException;
 import com.Lubee.Lubee.couple.domain.Couple;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -80,7 +82,7 @@ public class CoupleService {
      *     - 두 user가 커플 연결됐을 경우, DB에서 두 러비코드 삭제
      */
     @Transactional
-    public ApiResponseDto<Long> linkCouple(UserDetails userDetails, LinkCoupleRequest linkCoupleRequest) {
+    public ApiResponseDto<SuccessResponse> linkCouple(UserDetails userDetails, LinkCoupleRequest linkCoupleRequest) {
 
         User requester = userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new RestApiException(ErrorType.NOT_FOUND_USER));
@@ -115,7 +117,7 @@ public class CoupleService {
         redisTemplate.delete(receiver.getId());         // 커플된 유저의 러비코드는 삭제하기
         redisTemplate.delete(requester.getId());        // 만약 해당 key가 없어도 무시됨
 
-        return ResponseUtils.ok(couple.getId(), ErrorResponse.builder().status(200).message("커플 생성 성공").build());
+        return ResponseUtils.ok(SuccessResponse.of(HttpStatus.OK, "커플 연결 완료"), ErrorResponse.builder().status(200).message("요청 성공").build());
     }
     @Transactional
     public List<Profile> getCouplesProfile(Couple couple)

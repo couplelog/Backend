@@ -1,6 +1,7 @@
 package com.Lubee.Lubee.couple.controller;
 
 import com.Lubee.Lubee.common.api.ApiResponseDto;
+import com.Lubee.Lubee.common.api.SuccessResponse;
 import com.Lubee.Lubee.couple.dto.CoupleInfoDto;
 import com.Lubee.Lubee.couple.dto.LinkCoupleRequest;
 import com.Lubee.Lubee.couple.dto.LubeeCodeResponse;
@@ -37,7 +38,7 @@ public class CoupleController {
      * @return ApiResponseDto<LubeeCodeResponse>  생성된 LubeeCode의 id를 포함
      */
     @PostMapping("/link")
-    public ApiResponseDto<Long> linkCouple(
+    public ApiResponseDto<SuccessResponse> linkCouple(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody LinkCoupleRequest linkCoupleRequest) {
 
