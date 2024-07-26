@@ -116,7 +116,6 @@ public class OauthService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(refreshToken);
         return accessToken;
     }
 
@@ -236,7 +235,8 @@ public class OauthService {
 
             String accessToken = jwtUtil.createAccessToken(signUpUser.getUsername(), signUpUser.getRole());
             String refreshToken = jwtUtil.createRefreshToken(signUpUser.getUsername(), signUpUser.getRole());
-
+            System.out.println("access Token : " + accessToken);
+            System.out.println("refresh Token : " + refreshToken);
             // refresh token을 DB에 저장
             signUpUser.setKakaoRefreshToken(refreshToken);
 /*
