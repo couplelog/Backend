@@ -261,15 +261,16 @@ public class OauthService {
 
             String accessToken = jwtUtil.createAccessToken(user.get().getUsername(), user.get().getRole());
             String refreshToken = jwtUtil.createRefreshToken(user.get().getUsername(), user.get().getRole());
-
+            String accessTokenWithoutBearer = accessToken.substring(7);
+            String refreshTokenWithoutBearer = refreshToken.substring(7);
             // refresh token을 DB에 저장
-            user.get().setKakaoRefreshToken(refreshToken);
+            user.get().setKakaoRefreshToken(refreshTokenWithoutBearer);
             userRepository.save(user.get());
 
             // response 생성
             tokenDto.setMessage("카카오 로그인 성공");
-            tokenDto.setAccessToken(accessToken);
-            tokenDto.setRefreshToken(refreshToken);
+            tokenDto.setAccessToken(accessTokenWithoutBearer);
+            tokenDto.setRefreshToken(refreshTokenWithoutBearer);
 
 
         }
