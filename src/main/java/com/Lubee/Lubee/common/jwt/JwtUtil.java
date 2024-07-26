@@ -1,6 +1,8 @@
 package com.Lubee.Lubee.common.jwt;
 
+import com.Lubee.Lubee.common.enumSet.ErrorType;
 import com.Lubee.Lubee.common.enumSet.UserRoleEnum;
+import com.Lubee.Lubee.common.exception.RestApiException;
 import com.Lubee.Lubee.common.security.UserDetailsServiceImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -34,7 +36,7 @@ public class JwtUtil {
 
     // 60 더 곱했습니다
     private static final long TOKEN_TIME = 10 * 60 * 24 * 60 * 60 * 1000L; // 600 days
-    private static final long ACCESS_TOKEN_EXPIRATION_TIME = 10 * 300 * 60 * 1000; // 300 minutes
+    private static final long ACCESS_TOKEN_EXPIRATION_TIME = 20 * 5 * 10 * 300 * 60 * 1000L; // 200 days
     private static final long REFRESH_TOKEN_EXPIRATION_TIME = 10 * 7 * 24 * 60 * 60 * 1000L; // 70 days
 
     @Value("${JWT_TOKEN}")
@@ -97,17 +99,19 @@ public class JwtUtil {
         }catch (SecurityException | MalformedJwtException e)
         {
             log.info("Invalid JWT signature, 유효하지 않은 JWT 서명");
+            throw new RestApiException(ErrorType.INVALID_JWT_SIGNATURE);
         }catch (ExpiredJwtException e){
             log.info("Expired JWT token, 만료된 JWT token 입니다");
-            return false; // 만료된 토큰이면 return false
+            throw new RestApiException(ErrorType.EXPIRED_JWT_TOKEN); // 만료된 토큰이면 return false
         }catch (UnsupportedJwtException e)
         {
             log.info("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
+            throw new RestApiException(ErrorType.UNSUPPORTED_JWT_TOKEN);
         }catch (IllegalArgumentException e)
         {
             log.info("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
+            throw new RestApiException(ErrorType.JWT_CLAIMS_IS_EMPTY);
         }
-        return false;
     }
 
     // 토큰에서 사용자 정보 가져오기 (클레임에 존재)
@@ -126,10 +130,8 @@ public class JwtUtil {
     // 사용자의 인증 정보를 가져온다
     public Authentication createAuthentication(String username)
     {
-        System.out.println("2312");
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         // 사용자 정보 / 자격증명 / 권환
-        System.out.println("userdetail " + userDetails);
 
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }

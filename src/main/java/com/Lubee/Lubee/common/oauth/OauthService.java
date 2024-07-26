@@ -176,14 +176,6 @@ public class OauthService {
         return kakaoUserInfoDto;
     }
 
-    // 카카오 유저정보 받아오기
-    public KakaoUserInfoDto kakaoUserDetail(String code) {
-
-        String accessToken = getKakaoAccessToken(code); // 카카오 access token 받아오기
-
-        return getKakaoUserInfo(accessToken);
-    }
-
 
     // refresh token으로 access token 재발급
     @Transactional
@@ -253,8 +245,6 @@ public class OauthService {
             signUpUser.setCouple(couple);*/
 
             userRepository.save(signUpUser);
-            System.out.println("!!!!!!! signUpUser: " + signUpUser.getId());
-
             // response 생성
             tokenDto.setMessage("카카오 회원가입 절반 성공, 온보딩으로 이동!");
             tokenDto.setAccessToken(accessToken);

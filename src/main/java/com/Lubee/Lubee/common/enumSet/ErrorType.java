@@ -61,6 +61,10 @@ public enum ErrorType {
     DATE_COMMENT_ALREADY_EXIST(400, "해당 날짜에 데이트코멘트를 이미 작성했습니다."),
     ALREADY_COUPLE(400, "해당 사용자는 이미 커플입니다."),
     NOT_COUPLE(400, "해당 유저는 커플이 아닙니다"),
+    EXPIRED_JWT_TOKEN(400, "Expired JWT token, 만료된 JWT token 입니다"),
+    INVALID_JWT_SIGNATURE(400, "Invalid JWT signature, 유효하지 않은 JWT 서명"),
+    UNSUPPORTED_JWT_TOKEN(400, "Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다."),
+    JWT_CLAIMS_IS_EMPTY(400, "JWT claims is empty, 잘못된 JWT 토큰 입니다."),
     ;
 
 
