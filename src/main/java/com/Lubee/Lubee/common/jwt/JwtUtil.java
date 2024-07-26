@@ -37,12 +37,13 @@ public class JwtUtil {
 
     // 60 더 곱했습니다
     private static final long TOKEN_TIME = 10 * 60 * 24 * 60 * 60 * 1000L; // 600 days
-    private static final long ACCESS_TOKEN_EXPIRATION_TIME = 20 * 5 * 10 * 300 * 60 * 1000L; // 200 days
+    private static final long ACCESS_TOKEN_EXPIRATION_TIME = 10 * 5 * 10 * 300 * 60 * 1000L; // 200 days
     private static final long REFRESH_TOKEN_EXPIRATION_TIME = 10 * 7 * 24 * 60 * 60 * 1000L; // 70 days
 
     @Value("${JWT_TOKEN}")
     private String secretKey;
     private Key key;
+    private Key encoded_key;
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
     @PostConstruct // spring 빈이 생성된 후에 자동으로 호출되는 초기화 메서드
@@ -52,6 +53,7 @@ public class JwtUtil {
         byte[] bytes = Base64.getDecoder().decode(secretKey);
         // 위의 바이트를 사용하여 알고리즘을 통해 시크릿 키를 해시 키로 변환한다.
         key = Keys.hmacShaKeyFor(bytes);
+        encoded_key = key;
     }
 
     // HTTP 요청에서 JWT 토큰을 추출 - header 토큰을 가져오기
@@ -60,10 +62,9 @@ public class JwtUtil {
     {
         // Authorization 헤더의 값을 가져온다 - 클라이언트가 서버에게 토큰을 전달하기 위해 사용되는 문자열이 포함
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-        System.out.println(bearerToken);
         // bearerToken이 null이 아니고 비어있는지 확인, 헤더에 Authorization키가 있고 그값이 비어 있지 않은지를 체크
 
-//        System.out.println("resolveToken token: " + bearerToken);
+        System.out.println("resolveToken token: " + bearerToken);
         if (StringUtils.hasText(bearerToken)&& bearerToken.startsWith(BEARER_PREFIX))
         {
             // Bearer의 길이가 7이므로 7번째 문자부터 끝까지를 반환
@@ -77,7 +78,7 @@ public class JwtUtil {
 
     public boolean validateToken(String token)
     {
-//        System.out.println("validate token: " + token);
+        System.out.println("validate token: " + token);
         try{
             // jwt파싱을 위한 객체 생성 / 토큰의 서명 검증을 위해 사용할 키 설정 / 파서 생성 / 토큰을 파싱하고 클레임을 가져옴
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
@@ -142,7 +143,7 @@ public class JwtUtil {
                         .claim(AUTHORIZATION_KEY, role)
                         .setExpiration(new Date(date.getTime() + expirationTime))
                         .setIssuedAt(date)
-                        .signWith(key, signatureAlgorithm)
+                        .signWith(encoded_key, signatureAlgorithm )
                         .compact();
     }
 
