@@ -84,10 +84,9 @@ public class CoupleService {
     @Transactional
     public ApiResponseDto<SuccessResponse> linkCouple(UserDetails userDetails, LinkCoupleRequest linkCoupleRequest) {
 
-        User requester = userRepository.findByUsername(userDetails.getUsername())
-                .orElseThrow(() -> new RestApiException(ErrorType.NOT_FOUND_USER));
+        User requester = userService.getUser(userDetails);
         if (requester.isAlreadyCouple()) {
-            throw new RestApiException(ErrorType.REQUESTER_ALREADY_COUPLED);
+            return ResponseUtils.ok(SuccessResponse.of(HttpStatus.NO_CONTENT, "requester가 이미 커플입니다."), ErrorResponse.builder().status(204).message("요청 성공").build());
         }
 
         Long receiverId = reverseRedisTemplate.opsForValue().get(linkCoupleRequest.getInputCode());
@@ -99,7 +98,7 @@ public class CoupleService {
                 .orElseThrow(() -> new RestApiException(ErrorType.NOT_FOUND_USER));
 
         if (receiver.isAlreadyCouple()) {
-            throw new RestApiException(ErrorType.RECEIVER_ALREADY_COUPLED);
+            return ResponseUtils.ok(SuccessResponse.of(HttpStatus.NO_CONTENT, "receiver가 이미 커플입니다."), ErrorResponse.builder().status(204).message("요청 성공").build());
         }
 
         Couple couple = Couple.builder()
