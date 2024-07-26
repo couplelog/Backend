@@ -113,6 +113,12 @@ public class CoupleService {
         userRepository.save(requester);
         userRepository.save(receiver);
 
+        String lubeeCode_requester = redisTemplate.opsForValue().get(requester.getId());    // requester의 러비코드는 필요 없어짐!
+        if (lubeeCode_requester != null) {
+            reverseRedisTemplate.delete(lubeeCode_requester);
+        }
+        reverseRedisTemplate.delete(linkCoupleRequest.getInputCode());      // 이미 사용된 러비코드는 지우기 - receiver의 러비코드
+
         redisTemplate.delete(receiver.getId());         // 커플된 유저의 러비코드는 삭제하기
         redisTemplate.delete(requester.getId());        // 만약 해당 key가 없어도 무시됨
 
