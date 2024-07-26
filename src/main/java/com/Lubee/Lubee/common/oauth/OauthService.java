@@ -237,10 +237,13 @@ public class OauthService {
 
             String accessToken = jwtUtil.createAccessToken(signUpUser.getUsername(), signUpUser.getRole());
             String refreshToken = jwtUtil.createRefreshToken(signUpUser.getUsername(), signUpUser.getRole());
-            System.out.println("access Token : " + accessToken);
-            System.out.println("refresh Token : " + refreshToken);
+            String accessTokenWithoutBearer = accessToken.substring(7);
+            String refreshTokenWithoutBearer = refreshToken.substring(7);
+            System.out.println("access Token : " + accessTokenWithoutBearer);
+            System.out.println("refresh Token : " + refreshTokenWithoutBearer);
+
             // refresh token을 DB에 저장
-            signUpUser.setKakaoRefreshToken(refreshToken);
+            signUpUser.setKakaoRefreshToken(refreshTokenWithoutBearer);
 /*
             Couple couple = new Couple(signUpUser, null);
             coupleRepository.save(couple);
@@ -249,8 +252,8 @@ public class OauthService {
             userRepository.save(signUpUser);
             // response 생성
             tokenDto.setMessage("카카오 회원가입 절반 성공, 온보딩으로 이동!");
-            tokenDto.setAccessToken(accessToken);
-            tokenDto.setRefreshToken(refreshToken);
+            tokenDto.setAccessToken(accessTokenWithoutBearer);
+            tokenDto.setRefreshToken(refreshTokenWithoutBearer);
 
 
         } else { // DB에 존재하면 로그인 수행
