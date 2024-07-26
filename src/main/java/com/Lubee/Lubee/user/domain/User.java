@@ -66,7 +66,6 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     private List<UserCalendarMemory> userCalendarMemories;
 
-    //@ManyToOne
     @ManyToOne(optional = true)
     @JoinColumn(name = "couple_id")
     private Couple couple;

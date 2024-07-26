@@ -34,7 +34,7 @@ public class Couple {
 
     private int present_honey;
 
-    @OneToMany(mappedBy = "couple")  // 양방향 연관 관계에서 주인 설정
+    @OneToMany(mappedBy = "couple", cascade = CascadeType.ALL)      // couple 삭제 -> user 즉시 변동
     //@JoinColumn(name = "user_id", nullable = false)
     private List<User> user = new ArrayList<>();
 
@@ -58,6 +58,14 @@ public class Couple {
     public void setting_start(Couple couple, Date startDate)
     {
         this.startDate = startDate;
+    }
+
+    @PreRemove
+    public void onPreRemove() {             // couple이 삭제될 때 user의 값 자동 변경
+        for (User user : user) {
+            user.setCouple(null);
+            user.setAlreadyCouple(false);
+        }
     }
 
 }
