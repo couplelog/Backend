@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
@@ -70,21 +71,6 @@ public class JwtUtil {
         }
         // 형식이 맞지 않으면 null을 반환
         return null;
-    }
-
-    // 토큰 생성
-    public String createToken(String username, UserRoleEnum role)
-    {
-        Date date = new Date();
-
-        return BEARER_PREFIX +
-                Jwts.builder() // jwt를 생성하기 위한 빌더 객체
-                        .setSubject(username) // 토큰의 주체를 설정
-                        .claim(AUTHORIZATION_KEY,role) // 토큰에 사용자의 권한을 추가(Claim)
-                        .setExpiration(new Date(date.getTime()+ TOKEN_TIME)) // 토큰 만료시간을 성정
-                        .setIssuedAt(date) // 토큰의 발급 시간을 설정
-                        .signWith(key, signatureAlgorithm) // 토큰에 서명을 추가, jwt서명키 + 서명 알고리즘
-                        .compact(); // 최종적 jwt문자열을 생성
     }
 
     // 토큰 검증
@@ -150,6 +136,8 @@ public class JwtUtil {
     // 토큰 생성
     private String createTokenBase(String username, UserRoleEnum role, long expirationTime) {
         Date date = new Date();
+        byte[] keyBytes = Base64.getDecoder().decode(secretKey);
+        Key key = new SecretKeySpec(keyBytes, signatureAlgorithm.getJcaName());
         return BEARER_PREFIX +
                 Jwts.builder()
                         .setSubject(username)
