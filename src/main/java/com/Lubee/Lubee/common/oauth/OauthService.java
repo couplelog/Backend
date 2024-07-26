@@ -198,7 +198,7 @@ public class OauthService {
 
         String kakaoRefreshToken = user.getKakaoRefreshToken();
 
-        if (!jwtUtil.validateToken(kakaoRefreshToken.substring(7)) || !refreshToken.equals(kakaoRefreshToken.substring(7))) {
+        if (!jwtUtil.validateToken(kakaoRefreshToken) || !refreshToken.equals(kakaoRefreshToken)) {
             throw new RestApiException(ErrorType.REFRESH_TOKEN_NOT_VALIDATE); // 만료되거나 일치하지 않는 리프레시 토큰은 에러처리
         }
 
