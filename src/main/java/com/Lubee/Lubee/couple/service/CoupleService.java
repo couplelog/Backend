@@ -9,6 +9,7 @@ import com.Lubee.Lubee.common.enumSet.ErrorType;
 import com.Lubee.Lubee.common.exception.RestApiException;
 import com.Lubee.Lubee.couple.domain.Couple;
 import com.Lubee.Lubee.couple.dto.CoupleInfoDto;
+import com.Lubee.Lubee.couple.dto.LinkCoupleRequest;
 import com.Lubee.Lubee.couple.dto.LubeeCodeResponse;
 import com.Lubee.Lubee.couple.repository.CoupleRepository;
 import com.Lubee.Lubee.enumset.Profile;
@@ -79,7 +80,7 @@ public class CoupleService {
      *     - 두 user가 커플 연결됐을 경우, DB에서 두 러비코드 삭제
      */
     @Transactional
-    public ApiResponseDto<Long> linkCouple(UserDetails userDetails, String inputCode) {
+    public ApiResponseDto<Long> linkCouple(UserDetails userDetails, LinkCoupleRequest linkCoupleRequest) {
 
         User requester = userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new RestApiException(ErrorType.NOT_FOUND_USER));
@@ -87,7 +88,7 @@ public class CoupleService {
             throw new RestApiException(ErrorType.REQUESTER_ALREADY_COUPLED);
         }
 
-        Long receiverId = reverseRedisTemplate.opsForValue().get(inputCode);
+        Long receiverId = reverseRedisTemplate.opsForValue().get(linkCoupleRequest.getInputCode());
         if(receiverId == null) {
             throw new RestApiException(ErrorType.LUBEE_CODE_NOT_FOUND);
         }

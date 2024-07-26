@@ -2,6 +2,7 @@ package com.Lubee.Lubee.couple.controller;
 
 import com.Lubee.Lubee.common.api.ApiResponseDto;
 import com.Lubee.Lubee.couple.dto.CoupleInfoDto;
+import com.Lubee.Lubee.couple.dto.LinkCoupleRequest;
 import com.Lubee.Lubee.couple.dto.LubeeCodeResponse;
 import com.Lubee.Lubee.couple.service.CoupleService;
 import lombok.RequiredArgsConstructor;
@@ -32,16 +33,17 @@ public class CoupleController {
      * 커플 연결
      *
      * @param userDetails 인증된 사용자의 정보를 담고 있는 UserDetails 객체
-     * @param inputCode 사용자가 입력한 코드
+     * @param linkCoupleRequest 사용자가 입력한 코드
      * @return ApiResponseDto<LubeeCodeResponse>  생성된 LubeeCode의 id를 포함
      */
     @PostMapping("/link")
     public ApiResponseDto<Long> linkCouple(
             @AuthenticationPrincipal UserDetails userDetails,
-            @RequestParam String inputCode) {
+            @RequestBody LinkCoupleRequest linkCoupleRequest) {
 
-        return coupleService.linkCouple(userDetails, inputCode);
+        return coupleService.linkCouple(userDetails, linkCoupleRequest);
     }
+
     @GetMapping("/couple_info")
     public ApiResponseDto<CoupleInfoDto> getCoupleInfo(@AuthenticationPrincipal UserDetails userDetails){
 
