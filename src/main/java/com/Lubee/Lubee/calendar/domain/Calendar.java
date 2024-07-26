@@ -4,6 +4,7 @@ import com.Lubee.Lubee.calendar_memory.domain.CalendarMemory;
 import com.Lubee.Lubee.common.BaseEntity;
 import com.Lubee.Lubee.couple.domain.Couple;
 import com.Lubee.Lubee.date_comment.domain.DateComment;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -29,6 +30,7 @@ public class Calendar extends BaseEntity {
     private Couple couple;
 
     @Temporal(TemporalType.DATE)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd")
     private Date eventDate;
 
     private String description;
