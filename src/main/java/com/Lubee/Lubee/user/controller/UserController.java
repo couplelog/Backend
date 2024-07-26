@@ -20,7 +20,6 @@ public class UserController {
 
     final private OauthService oAuthService;
     final private UserService userService;
-
     @GetMapping("/test")
     public Boolean test()
     {

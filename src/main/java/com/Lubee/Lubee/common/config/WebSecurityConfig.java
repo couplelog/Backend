@@ -48,7 +48,6 @@ public class WebSecurityConfig {
                 )
                 .authorizeHttpRequests((authorizeRequests)->
                         authorizeRequests
-                                .requestMatchers("/**").permitAll()
                                 .requestMatchers("/api/users/kakao/**").permitAll()
                                 .requestMatchers("/api/test/**").permitAll()
                                 .requestMatchers("/actuator/**").permitAll()
