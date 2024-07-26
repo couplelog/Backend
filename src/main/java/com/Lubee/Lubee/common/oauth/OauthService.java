@@ -74,7 +74,7 @@ public class OauthService {
             //sb.append("&redirect_uri=https://lubee.site/api/users/kakao/simpleLogin"); // 이부분 나중에 변경해야함
             //sb.append("&redirect_uri=http://localhost:8080/api/users/kakao/simpleLogin"); // 로컬로 돌릴 때
             sb.append("&redirect_uri=http://localhost:5173/api/users/kakao/simpleLogin"); // 프론트로 돌릴 때
-            sb.append("&client_secret=AYKKr2WWSmWqlLb7gfMPmpuvQZUDXC2G");
+            sb.append("&client_secret=b3duTXcnAuFZVjHfVNAIgREK3yZWNOvd");
             sb.append("&code=").append(code);
             bw.write(sb.toString());
             bw.flush();
