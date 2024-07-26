@@ -11,13 +11,12 @@ import java.util.Date;
 public class CreateDateCommentRequest {
 
     private String content;
-    private Long coupleId;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd")
     private Date date;
 
-    public CreateDateCommentRequest(String content, Long coupleId, Date date) {
+    public CreateDateCommentRequest(String content, Date date) {
         this.content = content;
-        this.coupleId = coupleId;
         this.date = date;
     }
 }

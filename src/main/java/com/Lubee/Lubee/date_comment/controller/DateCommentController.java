@@ -29,7 +29,7 @@ public class DateCommentController {
      * @return ApiResponseDto<Long>  생성된 Datecomment의 id를 포함
      */
     @PostMapping("")
-    public ApiResponseDto<Long> createDateComment(
+    public ApiResponseDto<SuccessResponse> createDateComment(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody final CreateDateCommentRequest createDateCommentRequest){
 
@@ -40,17 +40,15 @@ public class DateCommentController {
      * 커플의 데이트코멘트 조회 (날짜 하루)
      *
      * @param userDetails 인증된 사용자의 정보를 담고 있는 UserDetails 객체
-     * @param coupleId   커플 아이디
      * @param date   원하는 날짜
      * @return List<DateCommentResponse>
      */
     @GetMapping("/today")
     public ApiResponseDto<TodayDateCommentResponse> findTodayDateCommentByCouple(
             @AuthenticationPrincipal UserDetails userDetails,
-            @RequestParam Long coupleId,
             @RequestParam @DateTimeFormat(pattern = "yyyy.MM.dd") Date date){
 
-        return dateCommentService.findTodayDateCommentByCouple(userDetails, coupleId, date);
+        return dateCommentService.findTodayDateCommentByCouple(userDetails, date);
     }
 
     /**
