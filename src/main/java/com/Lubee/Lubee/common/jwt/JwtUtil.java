@@ -136,8 +136,6 @@ public class JwtUtil {
     // 토큰 생성
     private String createTokenBase(String username, UserRoleEnum role, long expirationTime) {
         Date date = new Date();
-        byte[] keyBytes = Base64.getDecoder().decode(secretKey);
-        Key key = new SecretKeySpec(keyBytes, signatureAlgorithm.getJcaName());
         return BEARER_PREFIX +
                 Jwts.builder()
                         .setSubject(username)
