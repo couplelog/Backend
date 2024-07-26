@@ -61,7 +61,7 @@ public class CoupleService {
         final User user = userService.getUser(userDetails);
 
         if(user.isAlreadyCouple()){     // user가 이미 커플이면 러비코드 조회, 생성 불가능
-            return ResponseUtils.ok(null, ErrorResponse.builder().status(200).message("이미 커플인 유저는 러비코드가 없습니다.").build());
+            return ResponseUtils.ok(LubeeCodeResponse.of("ALREADY_COUPLE"), ErrorResponse.builder().status(200).message("이미 커플인 유저는 러비코드가 없습니다.").build());
             //throw new RestApiException(ErrorType.ALREADY_COUPLE);
         }
 
