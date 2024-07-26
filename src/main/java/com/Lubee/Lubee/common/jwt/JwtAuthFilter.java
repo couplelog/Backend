@@ -40,6 +40,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         // 유효한 토큰이라면, 토큰으로 부터 (클레임)사용자 정보를 가져온다.
 
         Claims info = jwtUtil.getUserInfoFromToken(token);
+        System.out.println("info : "+ info);
         try {
             setAuthentication(info.getSubject()); //  사용자명을 반환 받아서 사용자 정보로 인증 객체 만들기 -> 현재의 SecurityContext에 설정한다
         } catch (UsernameNotFoundException e) {
