@@ -58,11 +58,11 @@ public class CoupleService {
     @Transactional
     public ApiResponseDto<LubeeCodeResponse> getLubeeCode(UserDetails userDetails) {
 
-        final User user = userRepository.findByUsername(userDetails.getUsername())
-                .orElseThrow(() -> new RestApiException(ErrorType.NOT_FOUND_USER));
+        final User user = userService.getUser(userDetails);
 
         if(user.isAlreadyCouple()){     // user가 이미 커플이면 러비코드 조회, 생성 불가능
-            throw new RestApiException(ErrorType.ALREADY_COUPLE);
+            return ResponseUtils.ok(null, ErrorResponse.builder().status(200).message("이미 커플인 유저는 러비코드가 없습니다.").build());
+            //throw new RestApiException(ErrorType.ALREADY_COUPLE);
         }
 
         String lubeeCode = redisTemplate.opsForValue().get(user.getId());
