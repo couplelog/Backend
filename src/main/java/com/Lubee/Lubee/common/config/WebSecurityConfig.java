@@ -50,6 +50,7 @@ public class WebSecurityConfig {
                         authorizeRequests
                                 .requestMatchers("/**").permitAll()
                                 .requestMatchers("/api/users/kakao/**").permitAll()
+                                .requestMatchers("/api/test/**").permitAll()
                                 .requestMatchers("/actuator/**").permitAll()
                                 .requestMatchers("/v3/api-docs/**").permitAll()
                                 .requestMatchers("/swagger-ui/**").permitAll()
