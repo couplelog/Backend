@@ -17,7 +17,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -105,7 +104,6 @@ public class CalendarService {
         int monthHoney = 0;
         if (!calendars.isEmpty()) {     // calendar 리스트가 비어있지 않으면 월별 honey 개수 세기
             for (Calendar calendar : calendars) {
-                String dateKey = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getEventDate());
                 monthHoney += calendar.getCalendarMemories().size();     // 현재 Calendar의 CalendarMemory 개수를 추가하여 누적
             }
         }
