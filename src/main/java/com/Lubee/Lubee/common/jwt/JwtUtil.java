@@ -43,7 +43,7 @@ public class JwtUtil {
     @Value("${JWT_TOKEN}")
     private String secretKey;
     private Key key;
-    private Key encoded_key;
+
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
     @PostConstruct // spring 빈이 생성된 후에 자동으로 호출되는 초기화 메서드
@@ -53,7 +53,6 @@ public class JwtUtil {
         byte[] bytes = Base64.getDecoder().decode(secretKey);
         // 위의 바이트를 사용하여 알고리즘을 통해 시크릿 키를 해시 키로 변환한다.
         key = Keys.hmacShaKeyFor(bytes);
-        encoded_key = key;
     }
 
     // HTTP 요청에서 JWT 토큰을 추출 - header 토큰을 가져오기
@@ -107,7 +106,7 @@ public class JwtUtil {
         String cleanToken = token.replace(BEARER_PREFIX, "");
         System.out.println("getUserInfoFromToken token: " + cleanToken);
 
-        return Jwts.parserBuilder().setSigningKey(encoded_key).build().parseClaimsJws(cleanToken).getBody();
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(cleanToken).getBody();
 
 //        // jwt 파싱하기 위한 빌더 객체 생성 / 토큰의 서명 검증을 위해 사용할 키 설정 / 파싱 생성 / 토큰을 파싱하고 클레임을 가져옴 / 토큰의 본문을 반환
 
@@ -143,7 +142,7 @@ public class JwtUtil {
                         .claim(AUTHORIZATION_KEY, role)
                         .setExpiration(new Date(date.getTime() + expirationTime))
                         .setIssuedAt(date)
-                        .signWith(encoded_key, signatureAlgorithm )
+                        .signWith(key, signatureAlgorithm )
                         .compact();
     }
 
