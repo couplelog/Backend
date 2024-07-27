@@ -103,38 +103,38 @@ public class MemoryService {
 
     }
 
-    public List<MemoryBaseDto> getMemoryBase(List<UserCalendarMemory> userCalendarMemories) {
-        ArrayList<MemoryBaseDto> memoryBaseDtoArrayList = new ArrayList<>();
-
-        for (UserCalendarMemory userCalendarMemory : userCalendarMemories) {
-            Memory memory = userCalendarMemory.getCalendarMemory().getMemory();
-            String location_name = locationService.getLocationByMemory(memory).getName();
-            String picture = locationService.getLocationByMemory(memory).getPicture();
-            List<UserMemoryReaction> userMemoryReactionList = userMemoryReactionService.getUserMemoryReactionsByMemory(memory);
-
-            int i = 0;
-            Reaction reaction1 = null;
-            Reaction reaction2 = null;
-            Profile profile = null;
-
-            for (UserMemoryReaction userMemoryReaction : userMemoryReactionList) {
-                if (i == 0) {
-                    reaction1 = userMemoryReaction.getReaction();
-                    i++;
-                } else if (i == 1) {
-                    reaction2 = userMemoryReaction.getReaction();
-                    profile = userMemoryReaction.getUser().getProfile();
-                    i++;
-                }
-            }
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH시-mm분");
-            String upload_time = memory.getCreatedDate().format(formatter);
-            MemoryBaseDto memoryBaseDto = MemoryBaseDto.of(memory.getMemory_id(), location_name, picture, profile, reaction1, reaction2, upload_time);
-            memoryBaseDtoArrayList.add(memoryBaseDto);
-        }
-
-        return memoryBaseDtoArrayList;
-    }
+//    public List<MemoryBaseDto> getMemoryBase(List<UserCalendarMemory> userCalendarMemories) {
+//        ArrayList<MemoryBaseDto> memoryBaseDtoArrayList = new ArrayList<>();
+//
+//        for (UserCalendarMemory userCalendarMemory : userCalendarMemories) {
+//            Memory memory = userCalendarMemory.getCalendarMemory().getMemory();
+//            String location_name = locationService.getLocationByMemory(memory).getName();
+//            String picture = locationService.getLocationByMemory(memory).getPicture();
+//            List<UserMemoryReaction> userMemoryReactionList = userMemoryReactionService.getUserMemoryReactionsByMemory(memory);
+//
+//            int i = 0;
+//            Reaction reaction1 = null;
+//            Reaction reaction2 = null;
+//            Profile profile = null;
+//
+//            for (UserMemoryReaction userMemoryReaction : userMemoryReactionList) {
+//                if (i == 0) {
+//                    reaction1 = userMemoryReaction.getReaction();
+//                    i++;
+//                } else if (i == 1) {
+//                    reaction2 = userMemoryReaction.getReaction();
+//                    profile = userMemoryReaction.getUser().getProfile();
+//                    i++;
+//                }
+//            }
+//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH시-mm분");
+//            String upload_time = memory.getCreatedDate().format(formatter);
+//            MemoryBaseDto memoryBaseDto = MemoryBaseDto.of(memory.getMemory_id(), location_name, picture, profile, reaction1, reaction2, upload_time);
+//            memoryBaseDtoArrayList.add(memoryBaseDto);
+//        }
+//
+//        return memoryBaseDtoArrayList;
+//    }
 
     @Transactional
     public void createMemory(UserDetails loginUser, MultipartFile file, Long location_id, int year, int month, int day) {
@@ -226,13 +226,14 @@ public class MemoryService {
                 () -> new RestApiException(ErrorType.NOT_FOUND));
         Memory memory = memoryRepository.findById(memoryId).orElseThrow(
                 () -> new RestApiException(ErrorType.NOT_FOUND));
-
+        UserMemory userMemory = userMemoryRepository.findUserMemoryByMemory(memory);
         Optional<UserMemoryReaction> optional_reaction_first, optional_reaction_second;
         Reaction reaction_first = null;
         Reaction reaction_second = null;
 
         // 애인 찾기
         Optional<Couple> optionalCouple = coupleRepository.findCoupleByUser(user);
+
         User user_second;
 
         // 리액션 지정
@@ -250,9 +251,16 @@ public class MemoryService {
         else{       // 애인이 없을 경우
             user_second = null;
         }
-
+        Profile writer_profile_first = null;
+        Profile writer_profile_second = null;
         // MemoryBaseDto 생성
-        Profile userProfile = user.getProfile();
+        if (user == userMemory.getUser())
+        {
+            writer_profile_first = userMemory.getUser().getProfile();
+        }
+        else {
+            writer_profile_second = userMemory.getUser().getProfile();
+        }
         Location location = memory.getLocation();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH시-mm분");
         String upload_time = memory.getCreatedDate().format(formatter);
@@ -260,7 +268,8 @@ public class MemoryService {
                 memory.getMemory_id(),
                 location.getName(),
                 memory.getPicture(),
-                userProfile,// 로그인 유저의 프로필 정보를 가져와서 설정
+                writer_profile_first,
+                writer_profile_second,
                 reaction_first,
                 reaction_second,
                 upload_time

@@ -19,6 +19,8 @@ import com.Lubee.Lubee.memory.dto.MemoryBaseDto;
 import com.Lubee.Lubee.user.domain.User;
 import com.Lubee.Lubee.user.repository.UserRepository;
 import com.Lubee.Lubee.user_calendar_memory.repository.UserCalendarMemoryRepository;
+import com.Lubee.Lubee.user_memory.domain.UserMemory;
+import com.Lubee.Lubee.user_memory.repository.UserMemoryRepository;
 import com.Lubee.Lubee.user_memory_reaction.domain.UserMemoryReaction;
 import com.Lubee.Lubee.user_memory_reaction.repository.UserMemoryReactionRepository;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +45,7 @@ public class CalendarMemoryService {
     private final UserMemoryReactionRepository userMemoryReactionRepository;
     private final UserCalendarMemoryRepository userCalendarMemoryRepository;
     private final LocationRepository locationRepository;
+    private final UserMemoryRepository userMemoryRepository;
 
     public CalendarMemoryTotalListDto getYearlyMonthlyCalendarInfo(UserDetails loginUser) {
         User user = userRepository.findByUsername(loginUser.getUsername())
@@ -79,7 +82,7 @@ public class CalendarMemoryService {
                     if (calendarMemoryList != null) {
                         for (CalendarMemory calendarMemory : calendarMemoryList) {
                             Memory memory = calendarMemory.getMemory();
-
+                            UserMemory userMemory = userMemoryRepository.findUserMemoryByMemory(memory);
                             Optional<UserMemoryReaction> optional_reaction_first, optional_reaction_second;
                             Reaction reaction_first = null;
                             Reaction reaction_second = null;
@@ -100,11 +103,22 @@ public class CalendarMemoryService {
                             String locationName = location.getName();
                             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH시-mm분");
                             String upload_time = memory.getCreatedDate().format(formatter);
+                            Profile writer_profile_first = null;
+                            Profile writer_profile_second = null;
+                            // MemoryBaseDto 생성
+                            if (user == userMemory.getUser())
+                            {
+                                writer_profile_first = userMemory.getUser().getProfile();
+                            }
+                            else {
+                                writer_profile_second = userMemory.getUser().getProfile();
+                            }
                             MemoryBaseDto memoryBaseDto = MemoryBaseDto.of(
                                     memory.getMemory_id(),
                                     locationName,
                                     memory.getPicture(),
-                                    memory.getUserMemory().getUser().getProfile(),
+                                    writer_profile_first,
+                                    writer_profile_second,
                                     reaction_first,
                                     reaction_second,
                                     upload_time
@@ -143,10 +157,11 @@ public class CalendarMemoryService {
         if (calendarMemoryList != null) {
             for (CalendarMemory calendarMemory : calendarMemoryList) {
                 Memory memory = calendarMemory.getMemory();
+                UserMemory userMemory = userMemoryRepository.findUserMemoryByMemory(memory);
                 System.out.println("memoru_id :" + memory.getMemory_id());
                 Reaction reaction_first = null;
                 Reaction reaction_second = null;
-                Profile profile = null;
+
                 Optional<UserMemoryReaction> optional_reaction_first, optional_reaction_second;
                 optional_reaction_first = userMemoryReactionRepository.findByUserAndMemory(user, memory);
                 optional_reaction_second = userMemoryReactionRepository.findByUserAndMemory(user_second, memory);
@@ -160,11 +175,22 @@ public class CalendarMemoryService {
                 String locationName = location.getName();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH시-mm분");
                 String upload_time = memory.getCreatedDate().format(formatter);
+                Profile writer_profile_first = null;
+                Profile writer_profile_second = null;
+                // MemoryBaseDto 생성
+                if (user == userMemory.getUser())
+                {
+                    writer_profile_first = userMemory.getUser().getProfile();
+                }
+                else {
+                    writer_profile_second = userMemory.getUser().getProfile();
+                }
                 MemoryBaseDto memoryBaseDto = MemoryBaseDto.of(
                         memory.getMemory_id(),
                         locationName,
                         memory.getPicture(),
-                        memory.getUserMemory().getUser().getProfile(),
+                        writer_profile_first,
+                        writer_profile_second,
                         reaction_first,
                         reaction_second,
                         upload_time
