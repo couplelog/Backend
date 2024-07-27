@@ -17,6 +17,7 @@ import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -43,8 +44,9 @@ public class User extends BaseEntity {
     @Column(nullable = true, unique = true)
     private String email;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @Temporal(TemporalType.DATE)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd", timezone = "Asia/Seoul")
     private Date birthday;
 
     private Profile profile;
@@ -58,20 +60,20 @@ public class User extends BaseEntity {
     private UserRoleEnum role;
 
     @OneToMany(mappedBy = "user")
-    private List<DateComment> dateComments;
+    private List<DateComment> dateComments = new ArrayList<>();
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-    private List<UserMemory> userMemories;
+    private List<UserMemory> userMemories = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    private List<UserCalendarMemory> userCalendarMemories;
+    private List<UserCalendarMemory> userCalendarMemories = new ArrayList<>();
 
     @ManyToOne(optional = true)
     @JoinColumn(name = "couple_id")
     private Couple couple;
 
     @OneToMany(mappedBy = "user")
-    private List<UserMemoryReaction> userMemoryReactions;
+    private List<UserMemoryReaction> userMemoryReactions = new ArrayList<>();
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private FireBase fireBase;

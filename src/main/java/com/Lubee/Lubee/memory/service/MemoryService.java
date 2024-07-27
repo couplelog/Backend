@@ -79,7 +79,7 @@ public class MemoryService {
         Date today = new Date();
 
         // 날짜 포맷 정의하기
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd");
 
         // 포맷에 맞춰 날짜를 문자열로 변환하기
         return formatter.format(today);

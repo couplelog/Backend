@@ -61,7 +61,7 @@ public class MemoryFacade {
             Couple couple = coupleService.getCoupleByUser(user);
 
             String today_date_str = memoryService.getToday();
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd");
 
             // 문자열을 Date 객체로 변환
             Date today_date = formatter.parse(today_date_str);

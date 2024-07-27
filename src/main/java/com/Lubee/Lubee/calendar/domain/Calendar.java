@@ -10,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,18 +30,18 @@ public class Calendar extends BaseEntity {
     @JoinColumn(name = "couple_id", nullable = false)
     private Couple couple;
 
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
     @Temporal(TemporalType.DATE)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd", timezone = "Asia/Seoul")
     private Date eventDate;
 
-    private String description;
+    //private String description;
 
-    @OneToMany(mappedBy = "calendar")
-    private List<CalendarMemory> calendarMemories;
+    @OneToMany(mappedBy = "calendar", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CalendarMemory> calendarMemories = new ArrayList<>();
 
     @OneToMany(mappedBy = "calendar", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DateComment> dateComments = new ArrayList<>();
-
 
     @Builder
     public Calendar(Couple couple, Date eventDate) {
