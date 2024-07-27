@@ -41,7 +41,8 @@ public class LocationService {
                 .collect(Collectors.toList());
 
         if(locationDtos.isEmpty()){
-            throw new RestApiException(ErrorType.LOCATION_NOT_FOUND);
+            return ResponseUtils.ok(null, ErrorResponse.builder().status(200).message("해당 키워드로 검색된 결과가 없습니다").build());
+            //throw new RestApiException(ErrorType.LOCATION_NOT_FOUND);
         }
 
         return ResponseUtils.ok(new LocationSearchResponse(locationDtos), ErrorResponse.builder().status(200).message("위치 검색 성공").build());
