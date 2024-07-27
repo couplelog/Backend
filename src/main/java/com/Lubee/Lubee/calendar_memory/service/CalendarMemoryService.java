@@ -132,7 +132,9 @@ public class CalendarMemoryService {
                 .orElseThrow(() -> new RestApiException(ErrorType.NOT_FOUND_USER));
         Couple couple = coupleRepository.findCoupleByUser(user)
                 .orElseThrow(() -> new RestApiException(ErrorType.NOT_FOUND_COUPLE));
-
+        User user_second = userRepository.findRestUser(user, couple).orElseThrow(
+                () -> new RestApiException(ErrorType.NOT_FOUND_USER)
+        );
         List<MemoryBaseDto> memoryBaseDtoList = new ArrayList<>();
 
         // 해당 날짜에 맞는 CalendarMemory 리스트를 가져옵니다.
@@ -142,18 +144,16 @@ public class CalendarMemoryService {
             for (CalendarMemory calendarMemory : calendarMemoryList) {
                 Memory memory = calendarMemory.getMemory();
                 System.out.println("memoru_id :" + memory.getMemory_id());
-                List<UserMemoryReaction> userMemoryReactionList = userMemoryReactionRepository.getUserMemoryReactionByUserAndMemory(user, memory);
-
-                Reaction reaction1 = null;
-                Reaction reaction2 = null;
+                Reaction reaction_first = null;
+                Reaction reaction_second = null;
                 Profile profile = null;
-                if (!userMemoryReactionList.isEmpty()) {
-                    reaction1 = userMemoryReactionList.get(0).getReaction();
-                }
-                if (userMemoryReactionList.size() > 1) {
-                    reaction2 = userMemoryReactionList.get(1).getReaction();
-                    profile = userMemoryReactionList.get(1).getUser().getProfile();
-                }
+                Optional<UserMemoryReaction> optional_reaction_first, optional_reaction_second;
+                optional_reaction_first = userMemoryReactionRepository.findByUserAndMemory(user, memory);
+                optional_reaction_second = userMemoryReactionRepository.findByUserAndMemory(user_second, memory);
+                if (optional_reaction_first.isPresent())
+                    reaction_first = optional_reaction_first.get().getReaction();
+                if (optional_reaction_second.isPresent())
+                    reaction_second = optional_reaction_second.get().getReaction();
 
                 Location location = locationRepository.findById(memory.getLocation().getLocation_id())
                         .orElseThrow(() -> new RestApiException(ErrorType.NOT_FOUND_LOCATION));
@@ -165,8 +165,8 @@ public class CalendarMemoryService {
                         locationName,
                         memory.getPicture(),
                         memory.getUserMemory().getUser().getProfile(),
-                        reaction1,
-                        reaction2,
+                        reaction_first,
+                        reaction_second,
                         upload_time
                 );
                 memoryBaseDtoList.add(memoryBaseDto);

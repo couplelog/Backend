@@ -65,6 +65,7 @@ public enum ErrorType {
     INVALID_JWT_SIGNATURE(400, "Invalid JWT signature, 유효하지 않은 JWT 서명"),
     UNSUPPORTED_JWT_TOKEN(400, "Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다."),
     JWT_CLAIMS_IS_EMPTY(400, "JWT claims is empty, 잘못된 JWT 토큰 입니다."),
+    NOT_FOUND_REACTION(404, "해당 Reaction이 없습니다"),
     ;
 
 

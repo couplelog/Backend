@@ -48,9 +48,9 @@ public class MemoryController {
         return userMemoryReactionService.createReaction(loginUser, memory_id, reaction);
     }
 
-    @DeleteMapping("/reaction/")
-    public ApiResponseDto<SuccessResponse> deleteReaction(@AuthenticationPrincipal UserDetails loginUser, @RequestParam Long memory_id) {
-        return userMemoryReactionService.deleteReaction(loginUser, memory_id);
+    @PutMapping("/reaction/")
+    public ApiResponseDto<SuccessResponse> putReaction(@AuthenticationPrincipal UserDetails loginUser, @RequestParam Long memory_id, @RequestParam Reaction reaction) {
+        return userMemoryReactionService.putReaction(loginUser, memory_id, reaction);
     }
 
 }

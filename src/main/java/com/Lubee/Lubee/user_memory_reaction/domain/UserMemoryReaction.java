@@ -29,6 +29,7 @@ public class UserMemoryReaction extends BaseEntity {
     @JoinColumn(name = "memory_id", nullable = false)
     private Memory memory;
 
+    @Column(nullable = true)
     private Reaction reaction;
 
     public static UserMemoryReaction of(User user, Memory memory, Reaction reaction) {

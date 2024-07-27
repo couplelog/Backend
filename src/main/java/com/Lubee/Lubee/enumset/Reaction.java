@@ -7,7 +7,7 @@ public enum Reaction {
         heart("heart"),
         honey("honey"),
         smile("smile"),
-        bag("bag"),
+        bang("bang"),
         thumb("thumb");
 
         private final String ReactionName;

@@ -47,7 +47,7 @@ public class UserMemoryReactionService {
         userMemoryReactionRepository.save(userMemoryReaction);
         return ResponseUtils.ok(SuccessResponse.of(HttpStatus.OK, "Reaction 생성이 완료되었습니다"), ErrorResponse.builder().status(200).message("요청 성공").build());
     }
-    public ApiResponseDto<SuccessResponse>deleteReaction(UserDetails loginUser, Long memory_id)
+    public ApiResponseDto<SuccessResponse>putReaction(UserDetails loginUser, Long memory_id, Reaction reaction)
     {
         User user = userRepository.findUserByUsername(loginUser.getUsername()).orElseThrow(
                 () -> new RestApiException(ErrorType.NOT_FOUND_USER)
@@ -55,9 +55,13 @@ public class UserMemoryReactionService {
         Memory memory = memoryRepository.findById(memory_id).orElseThrow(
                 () -> new RestApiException(ErrorType.NOT_FOUND_MEMORY)
         );
-        UserMemoryReaction userMemoryReaction = userMemoryReactionRepository.getUserMemoryReactionOneByUserAndMemory(user, memory);
-        userMemoryReactionRepository.delete(userMemoryReaction);
-        return ResponseUtils.ok(SuccessResponse.of(HttpStatus.OK, "Reaction 삭제가 완료되었습니다"), ErrorResponse.builder().status(200).message("요청 성공").build());
+
+        UserMemoryReaction userMemoryReaction = userMemoryReactionRepository.findByUserAndMemory(user, memory).orElseThrow(
+                () -> new RestApiException(ErrorType.NOT_FOUND_REACTION)
+        );
+        userMemoryReaction.setReaction(reaction);
+        userMemoryReactionRepository.save(userMemoryReaction);
+        return ResponseUtils.ok(SuccessResponse.of(HttpStatus.OK, "Reaction 생성이 완료되었습니다"), ErrorResponse.builder().status(200).message("요청 성공").build());
     }
 
 }
