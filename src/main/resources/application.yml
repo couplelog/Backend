@@ -9,7 +9,6 @@ spring:
     password: ${mysql_pw}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
-    show-sql: true
     hibernate:
       ddl-auto: update
     defer-datasource-initialization: true
