@@ -4,7 +4,6 @@ import com.Lubee.Lubee.common.BaseEntity;
 import com.Lubee.Lubee.enumset.Reaction;
 import com.Lubee.Lubee.memory.domain.Memory;
 import com.Lubee.Lubee.user.domain.User;
-import com.fasterxml.jackson.databind.ser.Serializers;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

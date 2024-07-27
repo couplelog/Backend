@@ -12,6 +12,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -33,7 +34,7 @@ public class CalendarMemory extends BaseEntity {
     private Memory memory;
 
     @OneToMany(mappedBy = "calendarMemory", cascade = CascadeType.ALL)
-    private List<UserCalendarMemory> userCalendarMemories;
+    private List<UserCalendarMemory> userCalendarMemories = new ArrayList<>();
 
     @Builder
     public CalendarMemory(Calendar calendar, Memory memory) {

@@ -16,9 +16,9 @@ public class CoupleInfoDto{
     private Profile profile_first;
     private String nickname_second;
     private Profile profile_second;
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy.MM.dd")
     private Date birthday_first;
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy.MM.dd")
     private Date birthday_second;
     private AnniversaryListDto anniversaryListDto;
 

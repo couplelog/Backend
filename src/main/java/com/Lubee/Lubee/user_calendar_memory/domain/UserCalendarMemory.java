@@ -24,6 +24,7 @@ public class UserCalendarMemory extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "calendar_memory_id")
     private CalendarMemory calendarMemory;
+
     @Builder
     public UserCalendarMemory(User user, CalendarMemory calendarMemory) {
         this.user = user;

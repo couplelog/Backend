@@ -24,8 +24,9 @@ public class Couple {
     @Column(name = "couple_id")
     private Long id;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+    @DateTimeFormat(pattern = "yyyy.MM.dd")
+    @Temporal(TemporalType.DATE)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd", timezone = "Asia/Seoul")
     private Date startDate;
 
     private boolean subscribe;
@@ -38,14 +39,14 @@ public class Couple {
     //@JoinColumn(name = "user_id", nullable = false)
     private List<User> user = new ArrayList<>();
 
-    @OneToMany(mappedBy = "couple")
-    private List<Calendar> calendars;
+    @OneToMany(mappedBy = "couple", cascade = CascadeType.ALL, orphanRemoval = true)  // cascade 추가
+    private List<Calendar> calendars = new ArrayList<>();
 
     @OneToMany(mappedBy = "couple")
-    private List<DateComment> dateComments;
+    private List<DateComment> dateComments = new ArrayList<>();
 
     @OneToMany(mappedBy = "couple")
-    private List<Anniversary> anniversaries;
+    private List<Anniversary> anniversaries = new ArrayList<>();
 
     @Builder
     public Couple(User requester, User receiver) {
