@@ -15,7 +15,7 @@ import java.util.Date;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/calendars")
+@RequestMapping("/api/calendars/honey")
 public class HoneyController {
 
     private final HoneyService honeyService;
@@ -27,7 +27,7 @@ public class HoneyController {
      * @param date        꿀 정보 얻기를 원하는 날짜
      * @return ApiResponseDto<Integer>  해당 날짜의 꿀 개수
      */
-    @GetMapping("/honey/today")
+    @GetMapping("/today")
     public ApiResponseDto<Integer> getTodayHoney(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestParam @DateTimeFormat(pattern = "yyyy.MM.dd") final Date date) {
@@ -41,7 +41,7 @@ public class HoneyController {
      * @param userDetails 인증된 사용자의 정보를 담고 있는 UserDetails 객체
      * @return ApiResponseDto<Long>  커플이 가진 전체 꿀 개수
      */
-    @GetMapping("/honey/total")
+    @GetMapping("/total")
     public ApiResponseDto<Long> getTotalHoney(
             @AuthenticationPrincipal UserDetails userDetails) {
 
@@ -53,7 +53,7 @@ public class HoneyController {
      *
      * @return ApiResponseDto<Integer>  커플이 가진 전체 꿀 개수
      */
-    @GetMapping("/honey/month")
+    @GetMapping("/month")
     public ApiResponseDto<Integer> getMonthHoney(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestParam int year,
