@@ -79,18 +79,21 @@ public class CalendarMemoryService {
                     if (calendarMemoryList != null) {
                         for (CalendarMemory calendarMemory : calendarMemoryList) {
                             Memory memory = calendarMemory.getMemory();
-                            List<UserMemoryReaction> userMemoryReactionList = userMemoryReactionRepository.getUserMemoryReactionByUserAndMemory(user, memory);
 
-                            Reaction reaction1 = null;
-                            Reaction reaction2 = null;
-                            Profile profile = null;
-                            if (!userMemoryReactionList.isEmpty()) {
-                                reaction1 = userMemoryReactionList.get(0).getReaction();
-                            }
-                            if (userMemoryReactionList.size() > 1) {
-                                reaction2 = userMemoryReactionList.get(1).getReaction();
-                                profile = userMemoryReactionList.get(1).getUser().getProfile();
-                            }
+                            Optional<UserMemoryReaction> optional_reaction_first, optional_reaction_second;
+                            Reaction reaction_first = null;
+                            Reaction reaction_second = null;
+
+                            // 애인 찾기
+                            User user_second = findOtherUserInCouple(user.getId(), couple);
+
+                            //리액션 지정
+                            optional_reaction_first = userMemoryReactionRepository.findByUserAndMemory(user, memory);
+                            optional_reaction_second = userMemoryReactionRepository.findByUserAndMemory(user_second, memory);
+                            if (optional_reaction_first.isPresent())
+                                reaction_first = optional_reaction_first.get().getReaction();
+                            if (optional_reaction_second.isPresent())
+                                reaction_second = optional_reaction_second.get().getReaction();
 
                             Location location = locationRepository.findById(memory.getLocation().getLocation_id())
                                     .orElseThrow(() -> new RestApiException(ErrorType.NOT_FOUND_LOCATION));
@@ -102,8 +105,8 @@ public class CalendarMemoryService {
                                     locationName,
                                     memory.getPicture(),
                                     memory.getUserMemory().getUser().getProfile(),
-                                    reaction1,
-                                    reaction2,
+                                    reaction_first,
+                                    reaction_second,
                                     upload_time
                             );
                             memoryBaseDtoList.add(memoryBaseDto);
@@ -123,6 +126,7 @@ public class CalendarMemoryService {
 
         return CalendarMemoryTotalListDto.of(yearMonthDtoList);
     }
+
     public CalendarMemoryDayDto getDayCalendarInfo(UserDetails loginUser, int year, int month, int day) {
         User user = userRepository.findByUsername(loginUser.getUsername())
                 .orElseThrow(() -> new RestApiException(ErrorType.NOT_FOUND_USER));
@@ -170,5 +174,18 @@ public class CalendarMemoryService {
         }
 
         return CalendarMemoryDayDto.of(day, memoryBaseDtoList);
+    }
+
+    // 다른 유저 찾기
+    public User findOtherUserInCouple(Long knownUserId, Couple couple) {
+        if (couple != null && couple.getUser().size() == 2) {
+            // Couple에는 항상 2명의 사용자가 포함되므로, 알고 있는 사용자를 제외한 다른 사용자를 찾습니다.
+            for (User user : couple.getUser()) {
+                if (!user.getId().equals(knownUserId)) {
+                    return user;
+                }
+            }
+        }
+        return null; // 적절한 Couple을 찾지 못한 경우 null 반환
     }
 }

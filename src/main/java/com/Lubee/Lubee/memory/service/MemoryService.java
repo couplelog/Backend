@@ -235,6 +235,7 @@ public class MemoryService {
         Optional<Couple> optionalCouple = coupleRepository.findCoupleByUser(user);
         User user_second;
 
+        // 리액션 지정
         if(optionalCouple.isPresent()) {
             Couple couple = optionalCouple.get();
             user_second = findOtherUserInCouple(user.getId(), couple);
@@ -243,7 +244,7 @@ public class MemoryService {
             optional_reaction_second = userMemoryReactionRepository.findByUserAndMemory(user_second, memory);
             if (optional_reaction_first.isPresent())
                 reaction_first = optional_reaction_first.get().getReaction();
-            if (optional_reaction_first.isPresent())
+            if (optional_reaction_second.isPresent())
                 reaction_second = optional_reaction_second.get().getReaction();
         }
         else{       // 애인이 없을 경우
