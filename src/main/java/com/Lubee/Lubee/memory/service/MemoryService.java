@@ -9,6 +9,7 @@ import com.Lubee.Lubee.common.enumSet.ErrorType;
 import com.Lubee.Lubee.common.exception.RestApiException;
 import com.Lubee.Lubee.couple.domain.Couple;
 import com.Lubee.Lubee.couple.repository.CoupleRepository;
+import com.Lubee.Lubee.couple.service.CoupleService;
 import com.Lubee.Lubee.enumset.Profile;
 import com.Lubee.Lubee.enumset.Reaction;
 import com.Lubee.Lubee.location.domain.Location;
@@ -68,6 +69,7 @@ public class MemoryService {
     private final UserCalendarMemoryRepository userCalendarMemoryRepository;
     private final LocationRepository locationRepository;
     private final CalendarService calendarService;
+    private final CoupleService coupleService;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -127,7 +129,7 @@ public class MemoryService {
             }
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH시-mm분");
             String upload_time = memory.getCreatedDate().format(formatter);
-            MemoryBaseDto memoryBaseDto = MemoryBaseDto.of(memory.getMemory_id(), userCalendarMemory.getUser().getId(), location_name, picture, profile, reaction1, reaction2, upload_time);
+            MemoryBaseDto memoryBaseDto = MemoryBaseDto.of(memory.getMemory_id(), location_name, picture, profile, reaction1, reaction2, upload_time);
             memoryBaseDtoArrayList.add(memoryBaseDto);
         }
 
@@ -217,24 +219,35 @@ public class MemoryService {
             throw new RestApiException(ErrorType.FILE_NOT_PROVIDED);
         }
     }
+
     public MemoryBaseDto getOneMemory(UserDetails loginUser, Long memoryId) {
+
         User user = userRepository.findByUsername(loginUser.getUsername()).orElseThrow(
-                () -> new RestApiException(ErrorType.NOT_FOUND)
-        );
+                () -> new RestApiException(ErrorType.NOT_FOUND));
         Memory memory = memoryRepository.findById(memoryId).orElseThrow(
-                () -> new RestApiException(ErrorType.NOT_FOUND)
-        );
+                () -> new RestApiException(ErrorType.NOT_FOUND));
 
-        // 해당 Memory에 대한 Reactions 가져오기 (최대 2개만)
-        List<UserMemoryReaction> reactions = userMemoryReactionRepository.getUserMemoryReactionByMemory(memory);
-        Reaction reaction1 = null;
-        Reaction reaction2 = null;
+        Optional<UserMemoryReaction> optional_reaction_first, optional_reaction_second;
+        Reaction reaction_first = null;
+        Reaction reaction_second = null;
 
-        if (!reactions.isEmpty()) {
-            reaction1 = reactions.get(0).getReaction();
-            if (reactions.size() > 1) {
-                reaction2 = reactions.get(1).getReaction();
-            }
+        // 애인 찾기
+        Optional<Couple> optionalCouple = coupleRepository.findCoupleByUser(user);
+        User user_second;
+
+        if(optionalCouple.isPresent()) {
+            Couple couple = optionalCouple.get();
+            user_second = findOtherUserInCouple(user.getId(), couple);
+
+            optional_reaction_first = userMemoryReactionRepository.findByUserAndMemory(user, memory);
+            optional_reaction_second = userMemoryReactionRepository.findByUserAndMemory(user_second, memory);
+            if (optional_reaction_first.isPresent())
+                reaction_first = optional_reaction_first.get().getReaction();
+            if (optional_reaction_first.isPresent())
+                reaction_second = optional_reaction_second.get().getReaction();
+        }
+        else{       // 애인이 없을 경우
+            user_second = null;
         }
 
         // MemoryBaseDto 생성
@@ -244,17 +257,30 @@ public class MemoryService {
         String upload_time = memory.getCreatedDate().format(formatter);
         return MemoryBaseDto.of(
                 memory.getMemory_id(),
-                user.getId(),
                 location.getName(),
                 memory.getPicture(),
                 userProfile,// 로그인 유저의 프로필 정보를 가져와서 설정
-                reaction1,
-                reaction2,
+                reaction_first,
+                reaction_second,
                 upload_time
         );
     }
+
     public List<Memory> getMemorybyUserAndDate(Date date, Couple couple) {
         return memoryRepository.findByMemoryAndUser(date, couple);
+    }
+
+    // 다른 유저 찾기
+    public User findOtherUserInCouple(Long knownUserId, Couple couple) {
+        if (couple != null && couple.getUser().size() == 2) {
+            // Couple에는 항상 2명의 사용자가 포함되므로, 알고 있는 사용자를 제외한 다른 사용자를 찾습니다.
+            for (User user : couple.getUser()) {
+                if (!user.getId().equals(knownUserId)) {
+                    return user;
+                }
+            }
+        }
+        return null; // 적절한 Couple을 찾지 못한 경우 null 반환
     }
 
 

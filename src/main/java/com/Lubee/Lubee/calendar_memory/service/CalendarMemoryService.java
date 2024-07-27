@@ -43,6 +43,7 @@ public class CalendarMemoryService {
     private final UserMemoryReactionRepository userMemoryReactionRepository;
     private final UserCalendarMemoryRepository userCalendarMemoryRepository;
     private final LocationRepository locationRepository;
+
     public CalendarMemoryTotalListDto getYearlyMonthlyCalendarInfo(UserDetails loginUser) {
         User user = userRepository.findByUsername(loginUser.getUsername())
                 .orElseThrow(() -> new RestApiException(ErrorType.NOT_FOUND_USER));
@@ -98,7 +99,6 @@ public class CalendarMemoryService {
                             String upload_time = memory.getCreatedDate().format(formatter);
                             MemoryBaseDto memoryBaseDto = MemoryBaseDto.of(
                                     memory.getMemory_id(),
-                                    memory.getUserMemory().getUser().getId(),
                                     locationName,
                                     memory.getPicture(),
                                     memory.getUserMemory().getUser().getProfile(),
@@ -158,7 +158,6 @@ public class CalendarMemoryService {
                 String upload_time = memory.getCreatedDate().format(formatter);
                 MemoryBaseDto memoryBaseDto = MemoryBaseDto.of(
                         memory.getMemory_id(),
-                        memory.getUserMemory().getUser().getId(),
                         locationName,
                         memory.getPicture(),
                         memory.getUserMemory().getUser().getProfile(),
