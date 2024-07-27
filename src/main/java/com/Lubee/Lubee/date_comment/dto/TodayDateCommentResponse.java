@@ -1,6 +1,5 @@
 package com.Lubee.Lubee.date_comment.dto;
 
-import com.Lubee.Lubee.date_comment.domain.DateComment;
 import lombok.*;
 
 @Getter

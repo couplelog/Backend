@@ -179,7 +179,6 @@ public class DateCommentService {
 
         return dateComments.stream()
                 .map(dateComment -> DateCommentBaseDto.of(
-                        dateComment.getUser().getId(),
                         dateComment.getContent(),
                         dateComment.getUser().getProfile()))
                 .collect(Collectors.toList());
