@@ -4,11 +4,11 @@ import lombok.Getter;
 
 @Getter
 public enum Reaction {
-        LIKE("기쁨"),
-        LOVE("사랑"),
-        HAPPY("행복"),
-        SAD("슬픔"),
-        ANGRY("화남");
+        heart("heart"),
+        honey("honey"),
+        smile("smile"),
+        bag("bang"),
+        thumb("thumb");
 
         private final String ReactionName;
 
