@@ -40,6 +40,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -86,16 +87,20 @@ public class MemoryService {
     }
 
     public Long getLoveDays(Date startDate) {
-        // Date를 LocalDate로 변환
-        LocalDate specificDate = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-        // 오늘 날짜 가져오기
+        // java.sql.Date를 java.util.Date로 변환
+        java.util.Date utilDate = new java.util.Date(startDate.getTime());
+
+        LocalDate specificDate = utilDate.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
         LocalDate today = LocalDate.now();
 
         // 날짜 차이 계산하기
-
         return ChronoUnit.DAYS.between(specificDate, today);
+
     }
+
     public List<MemoryBaseDto> getMemoryBase(List<UserCalendarMemory> userCalendarMemories) {
         ArrayList<MemoryBaseDto> memoryBaseDtoArrayList = new ArrayList<>();
 

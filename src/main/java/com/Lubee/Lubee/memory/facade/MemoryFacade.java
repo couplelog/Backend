@@ -11,18 +11,14 @@ import com.Lubee.Lubee.common.exception.RestApiException;
 import com.Lubee.Lubee.couple.domain.Couple;
 import com.Lubee.Lubee.couple.repository.CoupleRepository;
 import com.Lubee.Lubee.couple.service.CoupleService;
-import com.Lubee.Lubee.date_comment.dto.DateCommentBaseDto;
 import com.Lubee.Lubee.date_comment.service.DateCommentService;
-import com.Lubee.Lubee.enumset.Profile;
 import com.Lubee.Lubee.memory.domain.Memory;
 import com.Lubee.Lubee.memory.dto.HomeDto;
 import com.Lubee.Lubee.memory.dto.MemoryBaseDto;
-import com.Lubee.Lubee.memory.dto.MemoryCreateRequestDto;
 import com.Lubee.Lubee.memory.repository.MemoryRepository;
 import com.Lubee.Lubee.memory.service.MemoryService;
 import com.Lubee.Lubee.user.domain.User;
 import com.Lubee.Lubee.user.service.UserService;
-import com.Lubee.Lubee.user_calendar_memory.domain.UserCalendarMemory;
 import com.Lubee.Lubee.user_calendar_memory.repository.UserCalendarMemoryRepository;
 import com.Lubee.Lubee.user_memory_reaction.repository.UserMemoryReactionRepository;
 import lombok.RequiredArgsConstructor;
@@ -68,8 +64,6 @@ public class MemoryFacade {
 
             // memory에서 정보 가져오기
             List<Memory> memoryList = memoryService.getMemorybyUserAndDate(today_date, couple);
-
-            // 오늘 날짜 문자열 가져오기
 
             // 커플 사귄날짜를 이용하여 연애일 수 가져오기
             long loveDays = memoryService.getLoveDays(couple.getStartDate());
