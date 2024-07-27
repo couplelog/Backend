@@ -157,7 +157,7 @@ public class CoupleService {
                 user_second.getNickname(),
                 user_second.getProfile(),
                 user.getBirthday(),
-                user.getBirthday(),
+                user_second.getBirthday(),
                 anniversaryListDto
 
         );
