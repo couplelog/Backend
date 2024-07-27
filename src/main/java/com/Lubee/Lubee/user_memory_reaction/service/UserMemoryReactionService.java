@@ -61,7 +61,7 @@ public class UserMemoryReactionService {
         );
         userMemoryReaction.setReaction(reaction);
         userMemoryReactionRepository.save(userMemoryReaction);
-        return ResponseUtils.ok(SuccessResponse.of(HttpStatus.OK, "Reaction 생성이 완료되었습니다"), ErrorResponse.builder().status(200).message("요청 성공").build());
+        return ResponseUtils.ok(SuccessResponse.of(HttpStatus.OK, "Reaction 수정이 완료되었습니다"), ErrorResponse.builder().status(200).message("요청 성공").build());
     }
 
 }
