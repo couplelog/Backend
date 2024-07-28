@@ -15,6 +15,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import static com.sun.beans.introspect.PropertyInfo.Name.required;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/memories")
@@ -49,7 +51,7 @@ public class MemoryController {
     }
 
     @PutMapping("/reaction/")
-    public ApiResponseDto<SuccessResponse> putReaction(@AuthenticationPrincipal UserDetails loginUser, @RequestParam Long memory_id, @RequestParam Reaction reaction) {
+    public ApiResponseDto<SuccessResponse> putReaction(@AuthenticationPrincipal UserDetails loginUser, @RequestParam Long memory_id, @RequestParam(required = false) Reaction reaction ) {
         return userMemoryReactionService.putReaction(loginUser, memory_id, reaction);
     }
 
