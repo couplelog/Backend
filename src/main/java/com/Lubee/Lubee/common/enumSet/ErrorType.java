@@ -66,6 +66,7 @@ public enum ErrorType {
     UNSUPPORTED_JWT_TOKEN(400, "Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다."),
     JWT_CLAIMS_IS_EMPTY(400, "JWT claims is empty, 잘못된 JWT 토큰 입니다."),
     NOT_FOUND_REACTION(404, "해당 Reaction이 없습니다"),
+    ALREADY_REACTION_CREATED(400, "해당 유저는 이미 공감을 한 상태입니다"),
     ;
 
 

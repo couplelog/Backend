@@ -42,10 +42,19 @@ public class UserMemoryReactionService {
         Memory memory = memoryRepository.findById(memory_id).orElseThrow(
                 () -> new RestApiException(ErrorType.NOT_FOUND_MEMORY)
         );
-        UserMemoryReaction userMemoryReaction = UserMemoryReaction.of(user,memory, reaction);
-        userMemoryReaction.setReaction(reaction);
-        userMemoryReactionRepository.save(userMemoryReaction);
-        return ResponseUtils.ok(SuccessResponse.of(HttpStatus.OK, "Reaction 생성이 완료되었습니다"), ErrorResponse.builder().status(200).message("요청 성공").build());
+        UserMemoryReaction userMemoryReaction =  userMemoryReactionRepository.findByUserAndMemoryNoOptional(user, memory);
+        if (userMemoryReaction == null)
+        {
+            UserMemoryReaction new_userMemoryReaction = UserMemoryReaction.of(user,memory, reaction);
+            new_userMemoryReaction.setReaction(reaction);
+            userMemoryReactionRepository.save(new_userMemoryReaction);
+            return ResponseUtils.ok(SuccessResponse.of(HttpStatus.OK, "Reaction 생성이 완료되었습니다"), ErrorResponse.builder().status(200).message("요청 성공").build());
+        }
+        else
+        {
+            throw new RestApiException(ErrorType.ALREADY_REACTION_CREATED);
+        }
+
     }
     public ApiResponseDto<SuccessResponse>putReaction(UserDetails loginUser, Long memory_id, Reaction reaction)
     {
@@ -59,8 +68,16 @@ public class UserMemoryReactionService {
         UserMemoryReaction userMemoryReaction = userMemoryReactionRepository.findByUserAndMemory(user, memory).orElseThrow(
                 () -> new RestApiException(ErrorType.NOT_FOUND_REACTION)
         );
-        userMemoryReaction.setReaction(reaction);
-        userMemoryReactionRepository.save(userMemoryReaction);
+        if (reaction == null)
+        {
+            userMemoryReaction.setReaction(null);
+            userMemoryReactionRepository.save(userMemoryReaction);
+        }
+        else{
+            userMemoryReaction.setReaction(reaction);
+            userMemoryReactionRepository.save(userMemoryReaction);
+        }
+
         return ResponseUtils.ok(SuccessResponse.of(HttpStatus.OK, "Reaction 수정이 완료되었습니다"), ErrorResponse.builder().status(200).message("요청 성공").build());
     }
 
