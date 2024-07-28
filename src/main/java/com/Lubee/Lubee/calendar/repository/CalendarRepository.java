@@ -2,15 +2,12 @@ package com.Lubee.Lubee.calendar.repository;
 
 import com.Lubee.Lubee.calendar.domain.Calendar;
 import com.Lubee.Lubee.couple.domain.Couple;
-import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.awt.print.Pageable;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 public interface CalendarRepository extends JpaRepository<Calendar, Long> {
 

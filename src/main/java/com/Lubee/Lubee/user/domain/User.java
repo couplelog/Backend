@@ -32,7 +32,6 @@ public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="user_id", insertable=false, updatable=false)
-    //@Column(name = "user_id")  // 필드 이름을 명시적으로 매핑
     private Long id;
 
     @Column(nullable = false)

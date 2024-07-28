@@ -18,8 +18,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.net.http.HttpResponse;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -40,7 +38,7 @@ public class UserService {
     @Transactional
     public ApiResponseDto<SuccessResponse> onBoarding(UserDetails loginUser, SignupDto signupDto)
     {
-        System.out.println(loginUser);
+        //System.out.println(loginUser);
         User user = userRepository.findUserByUsername(loginUser.getUsername()).orElseThrow(
                 () ->  new RestApiException(ErrorType.NOT_FOUND_USER)
         );
@@ -57,6 +55,7 @@ public class UserService {
         couple.setStartDate(signupDto.getStartDate());
         userRepository.save(user);
         coupleRepository.save(couple);
+
         return ResponseUtils.ok(SuccessResponse.of(HttpStatus.OK, "온보딩 완료"), ErrorResponse.builder().status(200).message("요청 성공").build());
     }
 

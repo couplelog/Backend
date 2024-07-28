@@ -12,10 +12,6 @@ public class UpdateDateCommentRequest {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd")
     private Date date;
-    private String content;
 
-    public UpdateDateCommentRequest(Date date, String content) {
-        this.date = date;
-        this.content = content;
-    }
+    private String content;
 }

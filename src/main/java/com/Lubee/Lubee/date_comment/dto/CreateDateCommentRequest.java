@@ -15,8 +15,4 @@ public class CreateDateCommentRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd")
     private Date date;
 
-    public CreateDateCommentRequest(String content, Date date) {
-        this.content = content;
-        this.date = date;
-    }
 }

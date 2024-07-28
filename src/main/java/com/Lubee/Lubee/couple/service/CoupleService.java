@@ -45,7 +45,6 @@ public class CoupleService {
 
     @Autowired
     private RedisTemplate<Long, String> redisTemplate;      // key-userid, value-lubeecode
-
     @Autowired
     private RedisTemplate<String, Long> reverseRedisTemplate;      // key-lubeecode, value-userid
 
@@ -62,7 +61,6 @@ public class CoupleService {
 
         if(user.isAlreadyCouple()){     // user가 이미 커플이면 러비코드 조회, 생성 불가능
             return ResponseUtils.ok(LubeeCodeResponse.of("ALREADY_COUPLE"), ErrorResponse.builder().status(200).message("이미 커플인 유저는 러비코드가 없습니다.").build());
-            //throw new RestApiException(ErrorType.ALREADY_COUPLE);
         }
 
         String lubeeCode = redisTemplate.opsForValue().get(user.getId());
@@ -89,7 +87,7 @@ public class CoupleService {
             return ResponseUtils.ok(SuccessResponse.of(HttpStatus.NO_CONTENT, "requester가 이미 커플입니다."), ErrorResponse.builder().status(204).message("요청 성공").build());
         }
 
-        Long receiverId = reverseRedisTemplate.opsForValue().get(linkCoupleRequest.getInputCode());
+        Long receiverId = reverseRedisTemplate.opsForValue().get(linkCoupleRequest.getInputCode()); // 입력한 러비코드로 연인 찾기
         if(receiverId == null) {
             throw new RestApiException(ErrorType.LUBEE_CODE_NOT_FOUND);
         }
@@ -105,7 +103,6 @@ public class CoupleService {
                 .receiver(receiver)
                 .requester(requester)
                 .build();
-
         coupleRepository.save(couple);
 
         requester.linkCouple(couple);
@@ -125,20 +122,9 @@ public class CoupleService {
         return ResponseUtils.ok(SuccessResponse.of(HttpStatus.OK, "커플 연결 완료"), ErrorResponse.builder().status(200).message("요청 성공").build());
     }
 
-    @Transactional(readOnly = true)
-    public List<Profile> getCouplesProfile(Couple couple)
-    {
-
-        return new ArrayList<Profile>(coupleRepository.findProfilesByCoupleId(couple.getId()));
-    }
-
-    @Transactional(readOnly = true)
-    public Couple getCoupleByUser(User user)
-    {
-        return coupleRepository.findCoupleByUser(user).
-                orElseThrow(() ->new RestApiException(ErrorType.NOT_FOUND_COUPLE));
-    }
-
+    /**
+     * CoupleInfo 찾기
+     */
     @Transactional(readOnly = true)
     public ApiResponseDto<CoupleInfoDto> getCoupleInfo(UserDetails loginUser)
     {
@@ -167,6 +153,14 @@ public class CoupleService {
         return ResponseUtils.ok(coupleInfoDto, null);
     }
 
-
+    /**
+     *  User로 Couple 찾기
+     */
+    @Transactional(readOnly = true)
+    public Couple getCoupleByUser(User user)
+    {
+        return coupleRepository.findCoupleByUser(user).
+                orElseThrow(() ->new RestApiException(ErrorType.NOT_FOUND_COUPLE));
+    }
 
 }

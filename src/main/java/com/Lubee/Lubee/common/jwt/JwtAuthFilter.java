@@ -29,7 +29,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         // request에 담긴 토큰을 가져온다
         // HTTP 요청으로 부터 JWT 토큰을 추출한다
         String token = jwtUtil.resolveToken(request);
-        System.out.println("token : " + token);
+        //System.out.println("token : " + token);
         // 토큰이 null이거나 인증되지 않으면 다음 필터로 넘어간다
         if (token == null || !jwtUtil.validateToken(token)) {
             request.setAttribute("exception", ErrorType.NOT_VALID_TOKEN);
@@ -40,7 +40,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         // 유효한 토큰이라면, 토큰으로 부터 (클레임)사용자 정보를 가져온다.
 
         Claims info = jwtUtil.getUserInfoFromToken(token);
-        System.out.println("info : "+ info);
+        //System.out.println("info : "+ info);
         try {
             setAuthentication(info.getSubject()); //  사용자명을 반환 받아서 사용자 정보로 인증 객체 만들기 -> 현재의 SecurityContext에 설정한다
         } catch (UsernameNotFoundException e) {

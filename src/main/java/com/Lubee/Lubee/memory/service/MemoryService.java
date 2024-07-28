@@ -56,9 +56,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemoryService {
 
-    private final LocationService locationService;
     private final MemoryRepository memoryRepository;
-    private final UserMemoryReactionService userMemoryReactionService;
     private final UserMemoryReactionRepository userMemoryReactionRepository;
     private final AmazonS3Client amazonS3Client;
     private final UserRepository userRepository;
@@ -69,7 +67,6 @@ public class MemoryService {
     private final UserCalendarMemoryRepository userCalendarMemoryRepository;
     private final LocationRepository locationRepository;
     private final CalendarService calendarService;
-    private final CoupleService coupleService;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -138,6 +135,7 @@ public class MemoryService {
 
     @Transactional
     public void createMemory(UserDetails loginUser, MultipartFile file, Long location_id, int year, int month, int day) {
+
         // 사용자 정보 가져오기
         User user = userRepository.findByUsername(loginUser.getUsername()).orElseThrow(
                 () -> new RestApiException(ErrorType.NOT_FOUND_USER)
