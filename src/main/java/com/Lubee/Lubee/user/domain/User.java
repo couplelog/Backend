@@ -88,12 +88,22 @@ public class User extends BaseEntity {
         this.username = socialId;
     }
 
-    public User(String username, String email, String userPuzzleId, UserRoleEnum role, String refreshToken, LoginType loginType) {
+    public User(String username, String email, UserRoleEnum role, String refreshToken, LoginType loginType) {
         this.username = username;
         this.email = email;
         this.role = role;
         this.kakaoRefreshToken = refreshToken;
         this.loginType = loginType;
+    }
+
+    public User(String username, String password, String email, Date birthday, Profile profile,  String nickname) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.birthday = birthday;
+        this.profile = profile;
+        this.nickname = nickname;
+        this.role = UserRoleEnum.USER;
     }
 
     public static User of(LoginType loginType, String username, String password, UserRoleEnum role) {
@@ -115,4 +125,5 @@ public class User extends BaseEntity {
         user.setProfile(signupDto.getProfile());
         user.setBirthday(signupDto.getBirthday());
     }
+
 }
