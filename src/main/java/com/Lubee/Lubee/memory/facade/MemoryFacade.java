@@ -49,7 +49,8 @@ public class MemoryFacade {
     private final UserMemoryReactionRepository userMemoryReactionRepository;
     private final UserCalendarMemoryRepository userCalendarMemoryRepository;
     private final CoupleRepository coupleRepository;
-    @Transactional
+
+    @Transactional(readOnly = true)
     public ApiResponseDto<HomeDto> getHomeInfo(UserDetails loginUser) {
         try {
             // 유저 정보로 커플 정보 얻기
@@ -92,6 +93,7 @@ public class MemoryFacade {
         }
     }
 
+    @Transactional
     public ApiResponseDto<SuccessResponse> createMemory(UserDetails loginUser, MultipartFile file, Long location_id, int year, int month, int day)
     {
 
@@ -105,12 +107,14 @@ public class MemoryFacade {
         return ResponseUtils.ok(SuccessResponse.of(HttpStatus.OK, "Memory 생성이 완료되었습니다"), ErrorResponse.builder().status(200).message("요청 성공").build());
     }
 
+    @Transactional(readOnly = true)
     public ApiResponseDto<MemoryBaseDto> getOneMemory(UserDetails loginUser, Long memoryId)
     {
         MemoryBaseDto memoryBaseDto = memoryService.getOneMemory(loginUser, memoryId);
         return ResponseUtils.ok(memoryBaseDto, null);
     }
 
+    @Transactional
     public ApiResponseDto<SuccessResponse> deleteMemory(UserDetails loginUser, Long memoryId)
     {
         User user = userService.getUser(loginUser);

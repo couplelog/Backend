@@ -54,6 +54,7 @@ public class LocationService {
         return name.contains(keyword);      // 정확히 검색명을 가지고 있는 검색어만 추출
     }
 
+    @Transactional(readOnly = true)
     public Location getLocationByMemory(Memory memory)
     {
         return locationRepository.findByMemories(memory).orElseThrow(

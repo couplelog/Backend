@@ -220,6 +220,7 @@ public class MemoryService {
         }
     }
 
+    @Transactional
     public MemoryBaseDto getOneMemory(UserDetails loginUser, Long memoryId) {
 
         User user = userRepository.findByUsername(loginUser.getUsername()).orElseThrow(
@@ -276,6 +277,7 @@ public class MemoryService {
         );
     }
 
+    @Transactional
     public List<Memory> getMemorybyUserAndDate(Date date, Couple couple) {
         return memoryRepository.findByMemoryAndUser(date, couple);
     }
