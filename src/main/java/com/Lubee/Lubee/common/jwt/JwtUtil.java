@@ -63,7 +63,7 @@ public class JwtUtil {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         // bearerToken이 null이 아니고 비어있는지 확인, 헤더에 Authorization키가 있고 그값이 비어 있지 않은지를 체크
 
-        System.out.println("resolveToken token: " + bearerToken);
+        //System.out.println("resolveToken token: " + bearerToken);
         if (StringUtils.hasText(bearerToken)&& bearerToken.startsWith(BEARER_PREFIX))
         {
             // Bearer의 길이가 7이므로 7번째 문자부터 끝까지를 반환
@@ -77,7 +77,7 @@ public class JwtUtil {
 
     public boolean validateToken(String token)
     {
-        System.out.println("validate token: " + token);
+        //System.out.println("validate token: " + token);
         try{
             // jwt파싱을 위한 객체 생성 / 토큰의 서명 검증을 위해 사용할 키 설정 / 파서 생성 / 토큰을 파싱하고 클레임을 가져옴
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
@@ -104,7 +104,7 @@ public class JwtUtil {
     public Claims getUserInfoFromToken(String token)
     {
         String cleanToken = token.replace(BEARER_PREFIX, "");
-        System.out.println("getUserInfoFromToken token: " + cleanToken);
+        //System.out.println("getUserInfoFromToken token: " + cleanToken);
 
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(cleanToken).getBody();
 

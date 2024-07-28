@@ -1,6 +1,6 @@
 package com.Lubee.Lubee.common.config;
 
-import com.Lubee.Lubee.common.LoggingInterceptor;
+import com.Lubee.Lubee.common.logging.LoggingInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

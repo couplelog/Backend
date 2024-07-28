@@ -5,7 +5,6 @@ import com.Lubee.Lubee.common.api.SuccessResponse;
 import com.Lubee.Lubee.enumset.Reaction;
 import com.Lubee.Lubee.memory.dto.HomeDto;
 import com.Lubee.Lubee.memory.dto.MemoryBaseDto;
-import com.Lubee.Lubee.memory.dto.MemoryCreateRequestDto;
 import com.Lubee.Lubee.memory.facade.MemoryFacade;
 import com.Lubee.Lubee.memory.service.MemoryService;
 import com.Lubee.Lubee.user_memory_reaction.service.UserMemoryReactionService;

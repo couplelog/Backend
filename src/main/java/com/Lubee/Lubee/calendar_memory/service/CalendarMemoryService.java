@@ -10,6 +10,7 @@ import com.Lubee.Lubee.common.enumSet.ErrorType;
 import com.Lubee.Lubee.common.exception.RestApiException;
 import com.Lubee.Lubee.couple.domain.Couple;
 import com.Lubee.Lubee.couple.repository.CoupleRepository;
+import com.Lubee.Lubee.couple.service.CoupleService;
 import com.Lubee.Lubee.enumset.Profile;
 import com.Lubee.Lubee.enumset.Reaction;
 import com.Lubee.Lubee.location.domain.Location;
@@ -18,6 +19,7 @@ import com.Lubee.Lubee.memory.domain.Memory;
 import com.Lubee.Lubee.memory.dto.MemoryBaseDto;
 import com.Lubee.Lubee.user.domain.User;
 import com.Lubee.Lubee.user.repository.UserRepository;
+import com.Lubee.Lubee.user.service.UserService;
 import com.Lubee.Lubee.user_calendar_memory.repository.UserCalendarMemoryRepository;
 import com.Lubee.Lubee.user_memory.domain.UserMemory;
 import com.Lubee.Lubee.user_memory.repository.UserMemoryRepository;
@@ -38,21 +40,20 @@ import java.util.*;
 @Slf4j
 public class CalendarMemoryService {
 
-    private final CalendarRepository calendarRepository;
     private final CalendarMemoryRepository calendarMemoryRepository;
     private final CoupleRepository coupleRepository;
     private final UserRepository userRepository;
     private final UserMemoryReactionRepository userMemoryReactionRepository;
-    private final UserCalendarMemoryRepository userCalendarMemoryRepository;
     private final LocationRepository locationRepository;
     private final UserMemoryRepository userMemoryRepository;
+    private final UserService userService;
+    private final CoupleService coupleService;
 
     @Transactional(readOnly = true)
     public CalendarMemoryTotalListDto getYearlyMonthlyCalendarInfo(UserDetails loginUser) {
-        User user = userRepository.findByUsername(loginUser.getUsername())
-                .orElseThrow(() -> new RestApiException(ErrorType.NOT_FOUND_USER));
-        Couple couple = coupleRepository.findCoupleByUser(user)
-                .orElseThrow(() -> new RestApiException(ErrorType.NOT_FOUND_COUPLE));
+
+        final User user = userService.getUser(loginUser);
+        final Couple couple = coupleService.getCoupleByUser(user);
 
         Date startDate = couple.getStartDate();
         Calendar startCalendar = Calendar.getInstance();
@@ -144,10 +145,9 @@ public class CalendarMemoryService {
 
     @Transactional(readOnly = true)
     public CalendarMemoryDayDto getDayCalendarInfo(UserDetails loginUser, int year, int month, int day) {
-        User user = userRepository.findByUsername(loginUser.getUsername())
-                .orElseThrow(() -> new RestApiException(ErrorType.NOT_FOUND_USER));
-        Couple couple = coupleRepository.findCoupleByUser(user)
-                .orElseThrow(() -> new RestApiException(ErrorType.NOT_FOUND_COUPLE));
+
+        final User user = userService.getUser(loginUser);
+        final Couple couple = coupleService.getCoupleByUser(user);
         User user_second = userRepository.findRestUser(user, couple).orElseThrow(
                 () -> new RestApiException(ErrorType.NOT_FOUND_USER)
         );

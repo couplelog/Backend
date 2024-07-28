@@ -40,20 +40,15 @@ import java.util.List;
 public class MemoryFacade {
 
     private final MemoryService memoryService;
-    private final CalendarService calendarService;
     private final UserService userService;
     private final CoupleService coupleService;
-    private final DateCommentService dateCommentService;
     private final MemoryRepository memoryRepository;
-    private final CalendarRepository calendarRepository;
-    private final UserMemoryReactionRepository userMemoryReactionRepository;
-    private final UserCalendarMemoryRepository userCalendarMemoryRepository;
     private final CoupleRepository coupleRepository;
 
     @Transactional(readOnly = true)
     public ApiResponseDto<HomeDto> getHomeInfo(UserDetails loginUser) {
+
         try {
-            // 유저 정보로 커플 정보 얻기
             User user = userService.getUser(loginUser);
             Couple couple = coupleService.getCoupleByUser(user);
 
@@ -101,7 +96,6 @@ public class MemoryFacade {
         User user = userService.getUser(loginUser);
         Couple couple = coupleService.getCoupleByUser(user);
         couple.addTotalHoney();        // total honey 더하기
-        System.out.println("!!!!! add honey : " + couple.getTotal_honey());
         coupleRepository.save(couple);
         memoryService.createMemory(loginUser, file,location_id, year, month, day);
         return ResponseUtils.ok(SuccessResponse.of(HttpStatus.OK, "Memory 생성이 완료되었습니다"), ErrorResponse.builder().status(200).message("요청 성공").build());
@@ -120,7 +114,6 @@ public class MemoryFacade {
         User user = userService.getUser(loginUser);
         Couple couple = coupleService.getCoupleByUser(user);
         couple.subtractTotalHoney();        // total honey 빼기
-        System.out.println("!!!!! subtract honey : " + couple.getTotal_honey());
         coupleRepository.save(couple);
         Memory memory = memoryRepository.findById(memoryId).orElseThrow(
                 () -> new RestApiException(ErrorType.NOT_FOUND)
@@ -129,6 +122,5 @@ public class MemoryFacade {
         return ResponseUtils.ok(SuccessResponse.of(HttpStatus.OK, "해당 Memory 삭제가 완료되었습니다"), ErrorResponse.builder().status(200).message("요청 성공").build());
 
     }
-
 
 }

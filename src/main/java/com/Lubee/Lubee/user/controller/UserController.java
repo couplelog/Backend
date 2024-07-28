@@ -31,9 +31,8 @@ public class UserController {
 
     @PostMapping("/kakao/simpleLogin")
     public ApiResponseDto<TokenDto> kakaoSimple(
-            @RequestParam("code") String kakaoAccessToken
-    )
-    {
+            @RequestParam("code") String kakaoAccessToken) {
+
         if (kakaoAccessToken == null || kakaoAccessToken.isEmpty()) {
             throw new IllegalArgumentException("Kakao access token is required");
         }
@@ -43,16 +42,15 @@ public class UserController {
     @PostMapping("/kakao/refresh")
     public ApiResponseDto<TokenDto> kakaorefreshToken(
             @RequestHeader(value="accessToken") String accessToken,
-            @RequestHeader(value="refreshToken") String refreshToken
-    ) {
+            @RequestHeader(value="refreshToken") String refreshToken) {
+
         return oAuthService.refreshKakaoToken(accessToken, refreshToken);
     }
     @PostMapping("/onBoarding")
     public ApiResponseDto<SuccessResponse> onBoarding(
             @AuthenticationPrincipal UserDetails userDetails,
-            @RequestBody SignupDto signupDto
-    )
-    {
+            @RequestBody SignupDto signupDto) {
+
         return userService.onBoarding(userDetails, signupDto);
     }
 

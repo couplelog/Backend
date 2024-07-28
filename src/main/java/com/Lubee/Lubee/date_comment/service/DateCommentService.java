@@ -101,7 +101,6 @@ public class DateCommentService {
             );
         }
 
-        TodayDateCommentResponse todayDateCommentResponses = new TodayDateCommentResponse();
         User lover = findOtherUserInCouple(user.getId(), couple);
 
         // 커플 모두가 작성한 데이트 코멘트 수 확인
@@ -170,25 +169,15 @@ public class DateCommentService {
         return null; // 적절한 Couple을 찾지 못한 경우 null 반환
     }
 
-    /*public List<DateCommentBaseDto> getDateCommentsByCoupleAndCalendar(Couple couple, Date today) {
-        List<DateComment> dateComments = dateCommentRepository.findByCoupleAndCalendarEventDate(couple, today);
-
-        return dateComments.stream()
-                .map(dateComment -> DateCommentBaseDto.of(
-                        dateComment.getContent(),
-                        dateComment.getUser().getProfile()))
-                .collect(Collectors.toList());
-    }*/
-
     // 유저로 커플 찾는 함수
     private Couple getUserCouple(User user) {
-        // Find the Couple associated with the User
+
         Optional<Couple> optionalCouple = coupleRepository.findCoupleByUser(user);
 
         if (optionalCouple.isEmpty()) {
             throw new RestApiException(ErrorType.NOT_FOUND_COUPLE);
         }
-
         return optionalCouple.get();
     }
+
 }
