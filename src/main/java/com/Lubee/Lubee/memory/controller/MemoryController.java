@@ -15,8 +15,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import static com.sun.beans.introspect.PropertyInfo.Name.required;
-
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/memories")
