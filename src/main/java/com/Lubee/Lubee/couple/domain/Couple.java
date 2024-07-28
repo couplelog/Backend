@@ -36,7 +36,6 @@ public class Couple {
     private int present_honey;
 
     @OneToMany(mappedBy = "couple", cascade = CascadeType.ALL)      // couple 삭제 -> user 즉시 변동
-    //@JoinColumn(name = "user_id", nullable = false)
     private List<User> user = new ArrayList<>();
 
     @OneToMany(mappedBy = "couple", cascade = CascadeType.ALL, orphanRemoval = true)  // cascade 추가
@@ -56,10 +55,6 @@ public class Couple {
         this.total_honey = 0L;
         this.present_honey = 0;
     }
-    public void setting_start(Couple couple, Date startDate)
-    {
-        this.startDate = startDate;
-    }
 
     @PreRemove
     public void onPreRemove() {             // couple이 삭제될 때 user의 값 자동 변경
@@ -67,6 +62,19 @@ public class Couple {
             user.setCouple(null);
             user.setAlreadyCouple(false);
         }
+    }
+
+    public void subtractTotalHoney() {      // totalHoney 빼기 (memory 삭제)
+        this.total_honey--;
+    }
+
+    public void addTotalHoney() {           // totalHoney 더하기 (memory 추가)
+        this.total_honey++;
+    }
+
+    public void setting_start(Couple couple, Date startDate)
+    {
+        this.startDate = startDate;
     }
 
 }
