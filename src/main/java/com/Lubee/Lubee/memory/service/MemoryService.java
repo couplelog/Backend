@@ -208,7 +208,7 @@ public class MemoryService {
                 userCalendarMemoryRepository.save(userCalendarMemory);
                 memoryRepository.save(memory);
                 // 커플의 총 허니를 증가시키고 저장
-                couple.setTotal_honey(couple.getTotal_honey() + 1);
+                //couple.setTotal_honey(couple.getTotal_honey() + 1);
                 coupleRepository.save(couple);
 
             } catch (IOException e) {
