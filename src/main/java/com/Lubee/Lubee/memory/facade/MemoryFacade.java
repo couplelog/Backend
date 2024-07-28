@@ -101,7 +101,7 @@ public class MemoryFacade {
         User user = userService.getUser(loginUser);
         Couple couple = coupleService.getCoupleByUser(user);
         couple.addTotalHoney();        // total honey 더하기
-        System.out.println("add honey : " + couple.getTotal_honey());
+        System.out.println("!!!!! add honey : " + couple.getTotal_honey());
         coupleRepository.save(couple);
         memoryService.createMemory(loginUser, file,location_id, year, month, day);
         return ResponseUtils.ok(SuccessResponse.of(HttpStatus.OK, "Memory 생성이 완료되었습니다"), ErrorResponse.builder().status(200).message("요청 성공").build());
@@ -120,7 +120,7 @@ public class MemoryFacade {
         User user = userService.getUser(loginUser);
         Couple couple = coupleService.getCoupleByUser(user);
         couple.subtractTotalHoney();        // total honey 빼기
-        System.out.println("subtract honey : " + couple.getTotal_honey());
+        System.out.println("!!!!! subtract honey : " + couple.getTotal_honey());
         coupleRepository.save(couple);
         Memory memory = memoryRepository.findById(memoryId).orElseThrow(
                 () -> new RestApiException(ErrorType.NOT_FOUND)
