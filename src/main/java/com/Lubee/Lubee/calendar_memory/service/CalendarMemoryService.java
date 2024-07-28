@@ -47,6 +47,7 @@ public class CalendarMemoryService {
     private final LocationRepository locationRepository;
     private final UserMemoryRepository userMemoryRepository;
 
+    @Transactional(readOnly = true)
     public CalendarMemoryTotalListDto getYearlyMonthlyCalendarInfo(UserDetails loginUser) {
         User user = userRepository.findByUsername(loginUser.getUsername())
                 .orElseThrow(() -> new RestApiException(ErrorType.NOT_FOUND_USER));
@@ -141,6 +142,7 @@ public class CalendarMemoryService {
         return CalendarMemoryTotalListDto.of(yearMonthDtoList);
     }
 
+    @Transactional(readOnly = true)
     public CalendarMemoryDayDto getDayCalendarInfo(UserDetails loginUser, int year, int month, int day) {
         User user = userRepository.findByUsername(loginUser.getUsername())
                 .orElseThrow(() -> new RestApiException(ErrorType.NOT_FOUND_USER));

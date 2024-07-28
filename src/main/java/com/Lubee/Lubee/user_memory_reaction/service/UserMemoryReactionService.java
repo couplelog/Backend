@@ -26,14 +26,19 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
+
 public class UserMemoryReactionService {
     private final UserMemoryReactionRepository userMemoryReactionRepository;
     private final UserRepository userRepository;
     private final MemoryRepository memoryRepository;
+
+    @Transactional(readOnly = true)
     public List<UserMemoryReaction> getUserMemoryReactionsByMemory(Memory memory)
     {
         return userMemoryReactionRepository.getUserMemoryReactionByMemory(memory);
     }
+
+    @Transactional
     public ApiResponseDto<SuccessResponse>createReaction(UserDetails loginUser, Long memory_id, Reaction reaction)
     {
         User user = userRepository.findUserByUsername(loginUser.getUsername()).orElseThrow(
@@ -56,7 +61,9 @@ public class UserMemoryReactionService {
         }
 
     }
-    public ApiResponseDto<SuccessResponse>putReaction(UserDetails loginUser, Long memory_id, Reaction reaction)
+
+    @Transactional
+    public ApiResponseDto<SuccessResponse> putReaction(UserDetails loginUser, Long memory_id, Reaction reaction)
     {
         User user = userRepository.findUserByUsername(loginUser.getUsername()).orElseThrow(
                 () -> new RestApiException(ErrorType.NOT_FOUND_USER)

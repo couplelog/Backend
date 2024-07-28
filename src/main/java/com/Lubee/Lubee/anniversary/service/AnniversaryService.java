@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 public class AnniversaryService {
 
     private final AnniversaryRepository anniversaryRepository;
+
+    @Transactional(readOnly = true)
     public AnniversaryListDto getAnniversaryInfo(Couple couple) {
         // 커플의 기념일 목록을 가져옴
         List<Anniversary> anniversaryList = anniversaryRepository.findAnniversariesByCouple(couple);

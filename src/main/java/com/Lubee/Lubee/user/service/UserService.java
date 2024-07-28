@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.net.http.HttpResponse;
 
@@ -28,12 +29,15 @@ public class UserService {
     private final CoupleRepository coupleRepository;
 
     // 추후 수정
+    @Transactional(readOnly = true)
     public User getUser(UserDetails loginUser)
     {
 
         return userRepository.findByUsername(loginUser.getUsername())
                 .orElseThrow(() -> new RestApiException(ErrorType.NOT_FOUND_USER));
     }
+
+    @Transactional
     public ApiResponseDto<SuccessResponse> onBoarding(UserDetails loginUser, SignupDto signupDto)
     {
         System.out.println(loginUser);
@@ -55,4 +59,5 @@ public class UserService {
         coupleRepository.save(couple);
         return ResponseUtils.ok(SuccessResponse.of(HttpStatus.OK, "온보딩 완료"), ErrorResponse.builder().status(200).message("요청 성공").build());
     }
+
 }

@@ -124,20 +124,22 @@ public class CoupleService {
 
         return ResponseUtils.ok(SuccessResponse.of(HttpStatus.OK, "커플 연결 완료"), ErrorResponse.builder().status(200).message("요청 성공").build());
     }
-    @Transactional
+
+    @Transactional(readOnly = true)
     public List<Profile> getCouplesProfile(Couple couple)
     {
 
         return new ArrayList<Profile>(coupleRepository.findProfilesByCoupleId(couple.getId()));
     }
-    @Transactional
+
+    @Transactional(readOnly = true)
     public Couple getCoupleByUser(User user)
     {
         return coupleRepository.findCoupleByUser(user).
                 orElseThrow(() ->new RestApiException(ErrorType.NOT_FOUND_COUPLE));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public ApiResponseDto<CoupleInfoDto> getCoupleInfo(UserDetails loginUser)
     {
         User user = userRepository.findUserByUsername(loginUser.getUsername()).orElseThrow(
