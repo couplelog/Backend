@@ -41,10 +41,10 @@ public class Couple {
     @OneToMany(mappedBy = "couple", cascade = CascadeType.ALL, orphanRemoval = true)  // cascade 추가
     private List<Calendar> calendars = new ArrayList<>();
 
-    @OneToMany(mappedBy = "couple")
+    @OneToMany(mappedBy = "couple",cascade = CascadeType.ALL)
     private List<DateComment> dateComments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "couple")
+    @OneToMany(mappedBy = "couple",cascade = CascadeType.ALL)
     private List<Anniversary> anniversaries = new ArrayList<>();
 
     @Builder

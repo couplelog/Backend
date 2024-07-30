@@ -27,19 +27,31 @@ public class MemoryController {
         return memoryFacade.getHomeInfo(loginUser);
     }
 
+//    @PostMapping("/create")
+//    public ApiResponseDto<SuccessResponse> createMemory(@AuthenticationPrincipal UserDetails loginUser, @RequestPart("picture") MultipartFile file, @RequestParam Long location_id, @RequestParam int year,@RequestParam int month,@RequestParam int day) {
+//        return memoryFacade.createMemory(loginUser, file, location_id, year, month, day);
+//    }
     @PostMapping("/create")
-    public ApiResponseDto<SuccessResponse> createMemory(@AuthenticationPrincipal UserDetails loginUser, @RequestPart("picture") MultipartFile file, @RequestParam Long location_id, @RequestParam int year,@RequestParam int month,@RequestParam int day) {
-        return memoryFacade.createMemory(loginUser, file, location_id, year, month, day);
+    public ApiResponseDto<SuccessResponse> createMemory( @RequestPart("picture") MultipartFile file, @RequestParam Long location_id, @RequestParam int year,@RequestParam int month,@RequestParam int day) {
+        return memoryFacade.createMemory(file, location_id, year, month, day);
     }
 
+//    @GetMapping("/")
+//    public ApiResponseDto<MemoryBaseDto> getOneMemory(@AuthenticationPrincipal UserDetails loginUser, @RequestParam("memory_id") Long memory_id) {
+//        return memoryFacade.getOneMemory(loginUser, memory_id);
+//    }
     @GetMapping("/")
-    public ApiResponseDto<MemoryBaseDto> getOneMemory(@AuthenticationPrincipal UserDetails loginUser, @RequestParam("memory_id") Long memory_id) {
-        return memoryFacade.getOneMemory(loginUser, memory_id);
+    public ApiResponseDto<MemoryBaseDto> getOneMemory(@RequestParam("memory_id") Long memory_id) {
+        return memoryFacade.getOneMemory(memory_id);
     }
 
+//    @DeleteMapping("/")
+//    public ApiResponseDto<SuccessResponse> deleteOneMemory(@AuthenticationPrincipal UserDetails loginUser, @RequestParam("memory_id") Long memory_id) {
+//        return memoryFacade.deleteMemory(loginUser, memory_id);
+//    }
     @DeleteMapping("/")
-    public ApiResponseDto<SuccessResponse> deleteOneMemory(@AuthenticationPrincipal UserDetails loginUser, @RequestParam("memory_id") Long memory_id) {
-        return memoryFacade.deleteMemory(loginUser, memory_id);
+    public ApiResponseDto<SuccessResponse> deleteOneMemory( @RequestParam("memory_id") Long memory_id) {
+        return memoryFacade.deleteMemory(memory_id);
     }
 
     @PostMapping("/reaction/")

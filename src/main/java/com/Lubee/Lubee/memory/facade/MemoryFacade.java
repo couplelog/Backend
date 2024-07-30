@@ -18,6 +18,7 @@ import com.Lubee.Lubee.memory.dto.MemoryBaseDto;
 import com.Lubee.Lubee.memory.repository.MemoryRepository;
 import com.Lubee.Lubee.memory.service.MemoryService;
 import com.Lubee.Lubee.user.domain.User;
+import com.Lubee.Lubee.user.repository.UserRepository;
 import com.Lubee.Lubee.user.service.UserService;
 import com.Lubee.Lubee.user_calendar_memory.repository.UserCalendarMemoryRepository;
 import com.Lubee.Lubee.user_memory_reaction.repository.UserMemoryReactionRepository;
@@ -44,6 +45,7 @@ public class MemoryFacade {
     private final CoupleService coupleService;
     private final MemoryRepository memoryRepository;
     private final CoupleRepository coupleRepository;
+    private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
     public ApiResponseDto<HomeDto> getHomeInfo(UserDetails loginUser) {
@@ -89,29 +91,35 @@ public class MemoryFacade {
     }
 
     @Transactional
-    public ApiResponseDto<SuccessResponse> createMemory(UserDetails loginUser, MultipartFile file, Long location_id, int year, int month, int day)
+    public ApiResponseDto<SuccessResponse> createMemory( MultipartFile file, Long location_id, int year, int month, int day)
     {
 
         // memory 생성, calendar 도 생성, memory_calendar도 생성해준다
-        User user = userService.getUser(loginUser);
+//        User user = userService.getUser(loginUser);
+        User user = userRepository.findById(1L).orElseThrow(
+                () -> new RestApiException(ErrorType.NOT_FOUND_USER)
+        );
         Couple couple = coupleService.getCoupleByUser(user);
         couple.addTotalHoney();        // total honey 더하기
         coupleRepository.save(couple);
-        memoryService.createMemory(loginUser, file,location_id, year, month, day);
+        memoryService.createMemory(user, file,location_id, year, month, day);
         return ResponseUtils.ok(SuccessResponse.of(HttpStatus.OK, "Memory 생성이 완료되었습니다"), ErrorResponse.builder().status(200).message("요청 성공").build());
     }
 
     @Transactional(readOnly = true)
-    public ApiResponseDto<MemoryBaseDto> getOneMemory(UserDetails loginUser, Long memoryId)
+    public ApiResponseDto<MemoryBaseDto> getOneMemory( Long memoryId)
     {
-        MemoryBaseDto memoryBaseDto = memoryService.getOneMemory(loginUser, memoryId);
+        MemoryBaseDto memoryBaseDto = memoryService.getOneMemory( memoryId);
         return ResponseUtils.ok(memoryBaseDto, null);
     }
 
     @Transactional
-    public ApiResponseDto<SuccessResponse> deleteMemory(UserDetails loginUser, Long memoryId)
+    public ApiResponseDto<SuccessResponse> deleteMemory( Long memoryId)
     {
-        User user = userService.getUser(loginUser);
+//        User user = userService.getUser(loginUser);
+        User user = userRepository.findById(1L).orElseThrow(
+                () -> new RestApiException(ErrorType.NOT_FOUND_USER)
+        );
         Couple couple = coupleService.getCoupleByUser(user);
         couple.subtractTotalHoney();        // total honey 빼기
         coupleRepository.save(couple);

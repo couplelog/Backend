@@ -23,8 +23,6 @@ import com.Lubee.Lubee.user.domain.User;
 import com.Lubee.Lubee.user.repository.UserRepository;
 import com.Lubee.Lubee.user_calendar_memory.domain.UserCalendarMemory;
 import com.Lubee.Lubee.user_calendar_memory.repository.UserCalendarMemoryRepository;
-import com.Lubee.Lubee.user_memory.domain.UserMemory;
-import com.Lubee.Lubee.user_memory.repository.UserMemoryRepository;
 import com.Lubee.Lubee.user_memory_reaction.domain.UserMemoryReaction;
 import com.Lubee.Lubee.user_memory_reaction.repository.UserMemoryReactionRepository;
 import com.Lubee.Lubee.user_memory_reaction.service.UserMemoryReactionService;
@@ -39,14 +37,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -60,7 +55,6 @@ public class MemoryService {
     private final UserMemoryReactionRepository userMemoryReactionRepository;
     private final AmazonS3Client amazonS3Client;
     private final UserRepository userRepository;
-    private final UserMemoryRepository userMemoryRepository;
     private final CoupleRepository coupleRepository;
     private final CalendarRepository calendarRepository;
     private final CalendarMemoryRepository calendarMemoryRepository;
@@ -134,12 +128,12 @@ public class MemoryService {
 //    }
 
     @Transactional
-    public void createMemory(UserDetails loginUser, MultipartFile file, Long location_id, int year, int month, int day) {
+    public void createMemory(User user, MultipartFile file, Long location_id, int year, int month, int day) {
 
         // 사용자 정보 가져오기
-        User user = userRepository.findByUsername(loginUser.getUsername()).orElseThrow(
-                () -> new RestApiException(ErrorType.NOT_FOUND_USER)
-        );
+//        User user = userRepository.findByUsername(loginUser.getUsername()).orElseThrow(
+//                () -> new RestApiException(ErrorType.NOT_FOUND_USER)
+//        );
         Couple couple = coupleRepository.findCoupleByUser(user).orElseThrow(
                 () -> new RestApiException(ErrorType.NOT_FOUND_COUPLE)
         );
@@ -197,13 +191,11 @@ public class MemoryService {
                         .build();
                 calendarMemoryRepository.save(calendarMemory);
 
-                // UserMemory 생성 및 저장
-                UserMemory userMemory = UserMemory.of(user, memory);
-                userMemoryRepository.save(userMemory);
-                memory.setUserMemory(userMemory);
                 // UserCalendarMemory 생성 및 저장
                 UserCalendarMemory userCalendarMemory = UserCalendarMemory.of(user, calendarMemory);
                 userCalendarMemoryRepository.save(userCalendarMemory);
+                // memory writer 설정
+                memory.setWriter(user);
                 memoryRepository.save(memory);
                 // 커플의 총 허니를 증가시키고 저장
                 //couple.setTotal_honey(couple.getTotal_honey() + 1);
@@ -219,13 +211,15 @@ public class MemoryService {
     }
 
     @Transactional
-    public MemoryBaseDto getOneMemory(UserDetails loginUser, Long memoryId) {
+    public MemoryBaseDto getOneMemory(Long memoryId) {
 
-        User user = userRepository.findByUsername(loginUser.getUsername()).orElseThrow(
-                () -> new RestApiException(ErrorType.NOT_FOUND));
+//        User user = userRepository.findByUsername(loginUser.getUsername()).orElseThrow(
+//                () -> new RestApiException(ErrorType.NOT_FOUND));
+        User user = userRepository.findById(1L).orElseThrow(
+                () -> new RestApiException(ErrorType.NOT_FOUND_USER)
+        );
         Memory memory = memoryRepository.findById(memoryId).orElseThrow(
                 () -> new RestApiException(ErrorType.NOT_FOUND));
-        UserMemory userMemory = userMemoryRepository.findUserMemoryByMemory(memory);
         Optional<UserMemoryReaction> optional_reaction_first, optional_reaction_second;
         Reaction reaction_first = null;
         Reaction reaction_second = null;
@@ -253,12 +247,13 @@ public class MemoryService {
         Profile writer_profile_first = null;
         Profile writer_profile_second = null;
         // MemoryBaseDto 생성
-        if (user == userMemory.getUser())
+        if (user == memory.getWriter())
         {
-            writer_profile_first = userMemory.getUser().getProfile();
+            writer_profile_first = memory.getWriter().getProfile();
         }
         else {
-            writer_profile_second = userMemory.getUser().getProfile();
+            assert user_second != null;
+            writer_profile_second = user_second.getProfile();
         }
         Location location = memory.getLocation();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH시-mm분");

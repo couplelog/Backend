@@ -4,7 +4,7 @@ spring:
       max-file-size: 10MB
       max-request-size: 30MB
   datasource:
-    url: jdbc:mysql://${mysql_endpoint}/Lubee
+    url: jdbc:mysql://${mysql_endpoint}/Lubee2
     username: root
     password: ${mysql_pw}
     driver-class-name: com.mysql.cj.jdbc.Driver

@@ -4,7 +4,7 @@ import com.Lubee.Lubee.calendar_memory.domain.CalendarMemory;
 import com.Lubee.Lubee.common.BaseEntity;
 import com.Lubee.Lubee.couple.domain.Couple;
 import com.Lubee.Lubee.location.domain.Location;
-import com.Lubee.Lubee.user_memory.domain.UserMemory;
+import com.Lubee.Lubee.user.domain.User;
 import com.Lubee.Lubee.user_memory_reaction.domain.UserMemoryReaction;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
@@ -39,19 +39,15 @@ public class Memory extends BaseEntity {
     private String picture;
 
     @ManyToOne
-    @JoinColumn(name = "user_memory_id")
-    private UserMemory userMemory;
-
-    @ManyToOne
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
+
+    @OneToOne
+    private User writer;
 
     @ManyToOne
     @JoinColumn(name = "couple_id", nullable = false)
     private Couple couple;
-
-    @OneToMany(mappedBy = "memory", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserMemory> userMemories = new ArrayList<>();
 
     @OneToMany(mappedBy = "memory", cascade = CascadeType.ALL)
     private List<CalendarMemory> calendarMemories = new ArrayList<>();
