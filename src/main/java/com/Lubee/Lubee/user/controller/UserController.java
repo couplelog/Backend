@@ -54,4 +54,10 @@ public class UserController {
         return userService.onBoarding(userDetails, signupDto);
     }
 
+    @PostMapping("/resetDataBase")
+    public ApiResponseDto<SuccessResponse> resetDataBase()
+    {
+        return userService.resetDataBase();
+    }
+
 }
