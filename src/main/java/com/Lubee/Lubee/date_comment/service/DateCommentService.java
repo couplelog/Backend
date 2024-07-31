@@ -107,7 +107,7 @@ public class DateCommentService {
         List<DateComment> dateComments = dateCommentRepository.findByCoupleAndCalendar(couple, calendar);
         DateComment myComment = dateCommentRepository.findByUserAndCalendar(user, calendar);
 
-        if (dateComments.isEmpty() || myComment == null) {     // 둘다 코멘트 작성x or 내가 작성x
+        if (dateComments.isEmpty() && myComment == null) {     // 둘다 코멘트 작성x or 내가 작성x
             return ResponseUtils.ok(
                     new TodayDateCommentResponse("",""),
                     ErrorResponse.builder().status(200).message("커플 모두 데이트 코멘트를 작성하지 않았습니다.").build()
@@ -117,12 +117,17 @@ public class DateCommentService {
         if (dateComments.size() == 1 && myComment != null) {    // 나만 작성
             return ResponseUtils.ok(
                     new TodayDateCommentResponse(myComment.getContent(),""),
-                    ErrorResponse.builder().status(200).message("상대방은 데이트코멘트를 작성하지 않았습니다.").build());
+                    ErrorResponse.builder().status(200).message("연인은 아직 작성하지 않았어요.").build());
         }
 
         // 둘 다 작성한 경우 => 상대방의 것도 열람 가능
         DateComment otherUserComment = dateCommentRepository.findByUserAndCalendar(lover, calendar);
-
+        if (dateComments.size() == 1 && myComment == null) // 나는 작성안하고 상대만 했을 때
+        {
+            return ResponseUtils.ok(
+                    new TodayDateCommentResponse("",otherUserComment.getContent()),
+                    ErrorResponse.builder().status(200).message("오늘의 데이트는 어떠셨나요?").build());
+        }
         return ResponseUtils.ok(
                 new TodayDateCommentResponse(myComment.getContent(), otherUserComment.getContent()),
                 ErrorResponse.builder().status(200).message("두 사람 모두 데이트코멘트를 작성했습니다.").build()
