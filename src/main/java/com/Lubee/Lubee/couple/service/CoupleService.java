@@ -149,7 +149,10 @@ public class CoupleService {
                 anniversaryListDto
 
         );
-
+        if (user_second.getNickname() == null)
+        {
+            ResponseUtils.ok(coupleInfoDto, ErrorResponse.builder().status(200).message("파트너 정보 없음").build());
+        }
         return ResponseUtils.ok(coupleInfoDto, ErrorResponse.builder().status(200).message("요청 성공").build());
     }
 
