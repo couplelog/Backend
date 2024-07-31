@@ -150,7 +150,7 @@ public class CoupleService {
 
         );
 
-        return ResponseUtils.ok(coupleInfoDto, null);
+        return ResponseUtils.ok(coupleInfoDto, ErrorResponse.builder().status(200).message("요청 성공").build());
     }
 
     /**
