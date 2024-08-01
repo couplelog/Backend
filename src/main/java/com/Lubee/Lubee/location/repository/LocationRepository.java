@@ -1,5 +1,6 @@
 package com.Lubee.Lubee.location.repository;
 
+import com.Lubee.Lubee.enumset.Category;
 import com.Lubee.Lubee.location.domain.Location;
 import com.Lubee.Lubee.memory.domain.Memory;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +16,6 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
 
     @Query("SELECT l FROM Location l JOIN Memory m On m.location = l")
     Optional<Location> findByMemories(Memory memory);
+
+    long countByCategory(Category category);
 }
