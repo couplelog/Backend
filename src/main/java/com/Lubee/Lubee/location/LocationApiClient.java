@@ -1,6 +1,7 @@
 package com.Lubee.Lubee.location;
 
 import com.Lubee.Lubee.enumset.Category;
+import com.Lubee.Lubee.location.domain.Location;
 import com.Lubee.Lubee.location.dto.SeoulLocationInfo;
 import com.Lubee.Lubee.location.mapper.LocationMapper;
 import com.Lubee.Lubee.location.repository.LocationRepository;
@@ -17,6 +18,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class LocationApiClient {
@@ -81,7 +83,7 @@ public class LocationApiClient {
     // API로부터 받은 JSON 데이터를 파싱 -> 각각의 항목을 SeoulLocationInfo 객체로 변환 -> 데이터베이스에 저장
     private boolean saveLocationData(String jsonData, Category category) {
 
-        List<SeoulLocationInfo> locations = new ArrayList<>();
+        List<SeoulLocationInfo> seoulLocationInfos = new ArrayList<>();
 
         try {
             JSONParser parser = new JSONParser();
@@ -109,9 +111,22 @@ public class LocationApiClient {
                         .category(category)
                         .build();
 
-                locations.add(info);
-                locationRepository.save(locationMapper.toEntity(info));
+                seoulLocationInfos.add(info);
+                //locationRepository.save(locationMapper.toEntity(info));
             }
+
+            // LocationMapper를 이용하여 SeoulLocationInfo 리스트를 Location 리스트로 변환
+            List<Location> locations = seoulLocationInfos.stream()
+                    .map(locationMapper::toEntity)
+                    .collect(Collectors.toList());
+
+            // 배치로 한번에 DB 저장
+            locationRepository.saveAll(locations);
+
+            long savedCount = locationRepository.countByCategory(category);
+
+            System.out.println(category + "  locations size : " + savedCount );
+
             return jsonArray.size() == MAX_ITEMS && locations.size() < totalLocations;
         } catch (ParseException e) {
             throw new RuntimeException(e);
