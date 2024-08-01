@@ -149,13 +149,16 @@ public class CoupleService {
                 anniversaryListDto
 
         );
-        if (user_second.getNickname() == null)
-        {
+        if (user.getNickname() == null && user_second.getNickname() == null) {
+            return ResponseUtils.ok(coupleInfoDto, ErrorResponse.builder().status(200).message("커플 정보 없음").build());
+        } else if (user.getNickname() == null) {
+            return ResponseUtils.ok(coupleInfoDto, ErrorResponse.builder().status(200).message("내 정보 없음").build());
+        } else if (user_second.getNickname() == null) {
             return ResponseUtils.ok(coupleInfoDto, ErrorResponse.builder().status(200).message("파트너 정보 없음").build());
-        }
-        else{
+        } else {
             return ResponseUtils.ok(coupleInfoDto, ErrorResponse.builder().status(200).message("요청 성공").build());
         }
+
     }
 
     /**
