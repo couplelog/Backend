@@ -60,6 +60,8 @@ public class UserService {
         return ResponseUtils.ok(SuccessResponse.of(HttpStatus.OK, "온보딩 완료"), ErrorResponse.builder().status(200).message("요청 성공").build());
     }
 
+
+
     @Transactional
     public ApiResponseDto<SuccessResponse> resetDataBase()
     {
@@ -73,7 +75,6 @@ public class UserService {
         jdbcTemplate.execute("DELETE FROM date_comment;");
         jdbcTemplate.execute("DELETE FROM fire_base;");
 
-        jdbcTemplate.execute("DELETE FROM location;");
         jdbcTemplate.execute("DELETE FROM memory;");
 
         jdbcTemplate.execute("DELETE FROM user;");

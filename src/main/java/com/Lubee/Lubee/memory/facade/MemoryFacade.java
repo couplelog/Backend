@@ -91,14 +91,10 @@ public class MemoryFacade {
     }
 
     @Transactional
-    public ApiResponseDto<SuccessResponse> createMemory( MultipartFile file, Long location_id, int year, int month, int day)
+    public ApiResponseDto<SuccessResponse> createMemory(UserDetails loginUser, MultipartFile file, Long location_id, int year, int month, int day)
     {
 
-        // memory 생성, calendar 도 생성, memory_calendar도 생성해준다
-//        User user = userService.getUser(loginUser);
-        User user = userRepository.findById(1L).orElseThrow(
-                () -> new RestApiException(ErrorType.NOT_FOUND_USER)
-        );
+        User user = userService.getUser(loginUser);
         Couple couple = coupleService.getCoupleByUser(user);
         couple.addTotalHoney();        // total honey 더하기
         coupleRepository.save(couple);
@@ -107,19 +103,16 @@ public class MemoryFacade {
     }
 
     @Transactional(readOnly = true)
-    public ApiResponseDto<MemoryBaseDto> getOneMemory( Long memoryId)
+    public ApiResponseDto<MemoryBaseDto> getOneMemory(UserDetails loginUser,  Long memoryId)
     {
-        MemoryBaseDto memoryBaseDto = memoryService.getOneMemory( memoryId);
-        return ResponseUtils.ok(memoryBaseDto, null);
+        MemoryBaseDto memoryBaseDto = memoryService.getOneMemory(loginUser, memoryId);
+        return ResponseUtils.ok(memoryBaseDto, ErrorResponse.builder().status(200).message("요청 성공").build());
     }
 
     @Transactional
-    public ApiResponseDto<SuccessResponse> deleteMemory( Long memoryId)
+    public ApiResponseDto<SuccessResponse> deleteMemory(UserDetails loginUser, Long memoryId)
     {
-//        User user = userService.getUser(loginUser);
-        User user = userRepository.findById(1L).orElseThrow(
-                () -> new RestApiException(ErrorType.NOT_FOUND_USER)
-        );
+        User user = userService.getUser(loginUser);
         Couple couple = coupleService.getCoupleByUser(user);
         couple.subtractTotalHoney();        // total honey 빼기
         coupleRepository.save(couple);

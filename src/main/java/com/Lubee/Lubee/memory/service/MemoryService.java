@@ -211,13 +211,11 @@ public class MemoryService {
     }
 
     @Transactional
-    public MemoryBaseDto getOneMemory(Long memoryId) {
+    public MemoryBaseDto getOneMemory(UserDetails  loginUser,  Long memoryId) {
 
-//        User user = userRepository.findByUsername(loginUser.getUsername()).orElseThrow(
-//                () -> new RestApiException(ErrorType.NOT_FOUND));
-        User user = userRepository.findById(1L).orElseThrow(
-                () -> new RestApiException(ErrorType.NOT_FOUND_USER)
-        );
+        User user = userRepository.findByUsername(loginUser.getUsername()).orElseThrow(
+                () -> new RestApiException(ErrorType.NOT_FOUND));
+
         Memory memory = memoryRepository.findById(memoryId).orElseThrow(
                 () -> new RestApiException(ErrorType.NOT_FOUND));
         Optional<UserMemoryReaction> optional_reaction_first, optional_reaction_second;

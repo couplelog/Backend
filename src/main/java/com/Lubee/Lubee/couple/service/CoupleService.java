@@ -171,4 +171,13 @@ public class CoupleService {
                 orElseThrow(() ->new RestApiException(ErrorType.NOT_FOUND_COUPLE));
     }
 
+    @Transactional(readOnly = true)
+    public ApiResponseDto<SuccessResponse> breakCouple(UserDetails loginUser)
+    {
+        User user = userService.getUser(loginUser);
+        Couple couple = getCoupleByUser(user);
+        coupleRepository.delete(couple);
+        return ResponseUtils.ok(SuccessResponse.of(HttpStatus.OK, "해당 Couple 연결이 해지되었습니다"), ErrorResponse.builder().status(200).message("요청 성공").build());
+    }
+
 }
