@@ -18,7 +18,8 @@ import org.springframework.context.annotation.Configuration;
                 version = "v0.0.1"),
         servers = {
                 @Server(url = "https://lubee.site"),
-                @Server(url = "http://localhost:8080")
+                @Server(url = "http://localhost:8080"),
+                @Server(url = "https://www.lubee.site"),
         }
 )
 @RequiredArgsConstructor

@@ -3,7 +3,6 @@ package com.Lubee.Lubee.location.mapper;
 import com.Lubee.Lubee.enumset.Spot;
 import com.Lubee.Lubee.location.domain.Location;
 import com.Lubee.Lubee.location.dto.SeoulLocationInfo;
-import lombok.Builder;
 import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Component;
 
@@ -12,11 +11,8 @@ public class LocationMapper {
 
     public Location toEntity(SeoulLocationInfo seoulLocationInfo) {
 
-        String xCoordStr = seoulLocationInfo.getX_coord();
-        String yCoordStr = seoulLocationInfo.getY_coord();
-
-        double xCoord = parseCoordinate(xCoordStr);
-        double yCoord = parseCoordinate(yCoordStr);
+        double xCoord = parseCoordinate(seoulLocationInfo.getX_coord());
+        double yCoord = parseCoordinate(seoulLocationInfo.getY_coord());
 
         Point coordinate = new Point(xCoord, yCoord);
 
@@ -40,4 +36,5 @@ public class LocationMapper {
             return 0.0;  // 기본값을 설정
         }
     }
+
 }

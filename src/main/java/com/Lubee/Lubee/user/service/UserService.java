@@ -14,6 +14,7 @@ import com.Lubee.Lubee.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +26,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final CoupleRepository coupleRepository;
-
+    private final JdbcTemplate jdbcTemplate;
     // 추후 수정
     @Transactional(readOnly = true)
     public User getUser(UserDetails loginUser)
@@ -57,6 +58,32 @@ public class UserService {
         coupleRepository.save(couple);
 
         return ResponseUtils.ok(SuccessResponse.of(HttpStatus.OK, "온보딩 완료"), ErrorResponse.builder().status(200).message("요청 성공").build());
+    }
+
+    @Transactional
+    public ApiResponseDto<SuccessResponse> resetDataBase()
+    {
+        jdbcTemplate.execute("SET FOREIGN_KEY_CHECKS = 0;");
+        jdbcTemplate.execute("DELETE FROM anniversary;");
+        jdbcTemplate.execute("DELETE FROM calendar;");
+
+        jdbcTemplate.execute("DELETE FROM calendar_memory;");
+        jdbcTemplate.execute("DELETE FROM couple;");
+
+        jdbcTemplate.execute("DELETE FROM date_comment;");
+        jdbcTemplate.execute("DELETE FROM fire_base;");
+
+        jdbcTemplate.execute("DELETE FROM location;");
+        jdbcTemplate.execute("DELETE FROM memory;");
+
+        jdbcTemplate.execute("DELETE FROM user;");
+        jdbcTemplate.execute("DELETE FROM user_calendar_memory;");
+
+        jdbcTemplate.execute("DELETE FROM user_memory;");
+        jdbcTemplate.execute("DELETE FROM user_memory_reaction;");
+        jdbcTemplate.execute("SET FOREIGN_KEY_CHECKS = 1;");
+
+        return ResponseUtils.ok(SuccessResponse.of(HttpStatus.OK, "DB 리셋 완료"), ErrorResponse.builder().status(200).message("요청 성공").build());
     }
 
 }
