@@ -44,6 +44,9 @@ public class OauthService {
     @Value("${REST_API_KEY}")           // 카카오 rest api key
     private String res_api_Key;
 
+    @Value("admin_key")
+    private String admin_key;
+
     public Boolean test()
     {
         return Boolean.FALSE;
