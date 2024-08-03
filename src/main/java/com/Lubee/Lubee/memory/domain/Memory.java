@@ -42,8 +42,9 @@ public class Memory extends BaseEntity {
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 
-    @OneToOne
-    private User writer;
+    @ManyToOne
+    @JoinColumn(name = "writer_id", nullable = false)
+    private User writer;  // 다대일 관계 설정
 
     @ManyToOne
     @JoinColumn(name = "couple_id", nullable = false)

@@ -119,6 +119,7 @@ public class MemoryFacade {
         Memory memory = memoryRepository.findById(memoryId).orElseThrow(
                 () -> new RestApiException(ErrorType.NOT_FOUND)
         );
+        memoryService.deleteS3(memory);
         memoryRepository.delete(memory);
         return ResponseUtils.ok(SuccessResponse.of(HttpStatus.OK, "해당 Memory 삭제가 완료되었습니다"), ErrorResponse.builder().status(200).message("요청 성공").build());
 
