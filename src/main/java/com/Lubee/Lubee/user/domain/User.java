@@ -75,6 +75,9 @@ public class User extends BaseEntity {
 
     private LoginType loginType;
 
+    // 카카오에서 발급해주는 access 토큰 -> 로그아웃이나 탈퇴에서 사용 되는 것
+    private String accessToken;
+
     private String kakaoRefreshToken;
 
     @Builder

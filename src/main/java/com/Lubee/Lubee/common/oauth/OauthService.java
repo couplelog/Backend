@@ -1,7 +1,9 @@
 package com.Lubee.Lubee.common.oauth;
 
 import com.Lubee.Lubee.common.api.ApiResponseDto;
+import com.Lubee.Lubee.common.api.ErrorResponse;
 import com.Lubee.Lubee.common.api.ResponseUtils;
+import com.Lubee.Lubee.common.api.SuccessResponse;
 import com.Lubee.Lubee.common.enumSet.ErrorType;
 import com.Lubee.Lubee.common.enumSet.LoginType;
 import com.Lubee.Lubee.common.enumSet.UserRoleEnum;
@@ -21,6 +23,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -213,7 +216,7 @@ public class OauthService {
         tokenDto.setAccessToken(newAccessToken);
         tokenDto.setRefreshToken(refreshTokenOrigin);
 
-        return ResponseUtils.ok(tokenDto, null);
+        return ResponseUtils.ok(tokenDto, ErrorResponse.builder().status(200).message("요청 성공").build());
     }
 
     @Transactional
@@ -236,9 +239,7 @@ public class OauthService {
             // 입력한 username, password, admin 으로 user 객체 만들어 repository 에 저장
             UserRoleEnum role = UserRoleEnum.USER; // 카카오 유저 ROLE 임의 설정
             User signUpUser = User.of(LoginType.KAKAO, username, password, role);
-            signUpUser.setLoginType(LoginType.KAKAO);
-
-
+            signUpUser.setAccessToken(kakaoAccessToken);
             String accessToken = jwtUtil.createAccessToken(signUpUser.getUsername(), signUpUser.getRole());
             String refreshToken = jwtUtil.createRefreshToken(signUpUser.getUsername(), signUpUser.getRole());
             String accessTokenWithoutBearer = accessToken.substring(7);
@@ -278,8 +279,36 @@ public class OauthService {
 
 
         }
-        return ResponseUtils.ok(tokenDto, null);
+        return ResponseUtils.ok(tokenDto, ErrorResponse.builder().status(200).message("요청 성공").build());
     }
+
+    public ApiResponseDto<SuccessResponse> logout(String accessToken)
+    {
+        String reqURL = "https://kapi.kakao.com/v1/user/logout";
+        try {
+            URL url = new URL(reqURL);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+
+            int responseCode = conn.getResponseCode();
+            System.out.println("responseCode : " + responseCode);
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+            String result = "";
+            String line = "";
+
+            while ((line = br.readLine()) != null) {
+                result += line;
+            }
+            System.out.println(result);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ResponseUtils.ok(SuccessResponse.of(HttpStatus.OK, "로그아웃 완료"), ErrorResponse.builder().status(200).message("요청 성공").build());
+    }
+
 
 
 }
