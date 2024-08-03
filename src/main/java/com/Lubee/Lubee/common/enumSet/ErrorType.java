@@ -57,7 +57,7 @@ public enum ErrorType {
     FILE_UPLOAD_FAILED(400, "이미지 업로드에 실패하였습니다"),
     FILE_NOT_PROVIDED(400, "이미지 파일이 업로드 되지 않았습니다"),
     LOCATION_NOT_FOUND(404, "검색된 위치 데이터가 없습니다"),
-    TODAY_MEMORY_END(400, "이미 5개의 허니를 채웠습니다"),
+    TODAY_MEMORY_END(400, "하루에 올릴 수 있는 기록은 최대 5개 입니다."),
     DATE_COMMENT_ALREADY_EXIST(400, "해당 날짜에 데이트코멘트를 이미 작성했습니다."),
     ALREADY_COUPLE(400, "해당 사용자는 이미 커플입니다."),
     NOT_COUPLE(400, "해당 유저는 커플이 아닙니다"),
