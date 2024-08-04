@@ -171,7 +171,7 @@ public class CoupleService {
                 orElseThrow(() ->new RestApiException(ErrorType.NOT_FOUND_COUPLE));
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ApiResponseDto<SuccessResponse> breakCouple(UserDetails loginUser)
     {
         User user = userService.getUser(loginUser);

@@ -35,7 +35,7 @@ public class Couple {
 
     private int present_honey;
 
-    @OneToMany(mappedBy = "couple", cascade = CascadeType.ALL)      // couple 삭제 -> user 즉시 변동
+    @OneToMany(mappedBy = "couple", cascade = CascadeType.PERSIST)      // couple 삭제 -> user 즉시 변동
     private List<User> user = new ArrayList<>();
 
     @OneToMany(mappedBy = "couple", cascade = CascadeType.ALL, orphanRemoval = true)  // cascade 추가

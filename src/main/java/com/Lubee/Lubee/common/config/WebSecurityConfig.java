@@ -48,8 +48,12 @@ public class WebSecurityConfig {
                 )
                 .authorizeHttpRequests((authorizeRequests)->
                         authorizeRequests
-                                .requestMatchers("/**").permitAll()
-                                .requestMatchers("/api/users/**").permitAll()
+                                .requestMatchers("/api/users/logout").permitAll()
+                                .requestMatchers("/api/users/signout").permitAll()
+                                .requestMatchers("/api/users/kakao/**").permitAll()
+                                .requestMatchers("/api/users/onBoarding").permitAll()
+                                .requestMatchers("/api/users/resetDataBase").permitAll()
+                                .requestMatchers("/api/users/test").permitAll()
                                 .requestMatchers("/api/test/**").permitAll()
                                 .requestMatchers("/actuator/**").permitAll()
                                 .requestMatchers("/v3/api-docs/**").permitAll()

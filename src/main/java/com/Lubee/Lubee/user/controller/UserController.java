@@ -67,11 +67,11 @@ public class UserController {
         String accessToken = user.getAccessToken();
         return oAuthService.logout(accessToken);
     }
-//    @GetMapping("/signOut")
-//    public ApiResponseDto<SuccessResponse> signOut(@AuthenticationPrincipal UserDetails userDetails) {
-//        User user = userService.getUser(userDetails);
-//        String accessToken = user.getAccessToken();
-//        return oAuthService.signOut(accessToken);
-//    }
+    @GetMapping("/signout")
+    public ApiResponseDto<SuccessResponse> signOut(@AuthenticationPrincipal UserDetails userDetails) {
+        User user = userService.getUser(userDetails);
+        String accessToken = user.getAccessToken();
+        return oAuthService.signOut(user, accessToken);
+    }
 
 }

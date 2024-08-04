@@ -61,7 +61,7 @@ public class S3Uploader {
 
     /**
      * S3에 있는 파일 삭제
-     * 영어 파일만 삭제 가능 -> 한글 이름 파일은 안됨
+     * 영어 파일만 삭제 가능 -> 한글 이름 파일은 안됨 -> 지금 사용 안함
      */
     public void deleteS3(String filePath) throws Exception {
         try{
