@@ -9,7 +9,6 @@ import com.Lubee.Lubee.enumset.Profile;
 import com.Lubee.Lubee.firebase.domain.FireBase;
 import com.Lubee.Lubee.memory.domain.Memory;
 import com.Lubee.Lubee.user.dto.SignupDto;
-import com.Lubee.Lubee.user_calendar_memory.domain.UserCalendarMemory;
 import com.Lubee.Lubee.user_memory_reaction.domain.UserMemoryReaction;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
@@ -60,9 +59,6 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<DateComment> dateComments = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<UserCalendarMemory> userCalendarMemories = new ArrayList<>();
 
     @ManyToOne(optional = true)
     @JoinColumn(name = "couple_id")

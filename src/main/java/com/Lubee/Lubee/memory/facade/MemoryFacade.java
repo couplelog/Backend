@@ -20,8 +20,6 @@ import com.Lubee.Lubee.memory.service.MemoryService;
 import com.Lubee.Lubee.user.domain.User;
 import com.Lubee.Lubee.user.repository.UserRepository;
 import com.Lubee.Lubee.user.service.UserService;
-import com.Lubee.Lubee.user_calendar_memory.repository.UserCalendarMemoryRepository;
-import com.Lubee.Lubee.user_memory_reaction.repository.UserMemoryReactionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

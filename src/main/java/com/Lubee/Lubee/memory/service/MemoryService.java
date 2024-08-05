@@ -21,8 +21,6 @@ import com.Lubee.Lubee.memory.dto.MemoryCreateRequestDto;
 import com.Lubee.Lubee.memory.repository.MemoryRepository;
 import com.Lubee.Lubee.user.domain.User;
 import com.Lubee.Lubee.user.repository.UserRepository;
-import com.Lubee.Lubee.user_calendar_memory.domain.UserCalendarMemory;
-import com.Lubee.Lubee.user_calendar_memory.repository.UserCalendarMemoryRepository;
 import com.Lubee.Lubee.user_memory_reaction.domain.UserMemoryReaction;
 import com.Lubee.Lubee.user_memory_reaction.repository.UserMemoryReactionRepository;
 import com.Lubee.Lubee.user_memory_reaction.service.UserMemoryReactionService;
@@ -60,7 +58,6 @@ public class MemoryService {
     private final CoupleRepository coupleRepository;
     private final CalendarRepository calendarRepository;
     private final CalendarMemoryRepository calendarMemoryRepository;
-    private final UserCalendarMemoryRepository userCalendarMemoryRepository;
     private final LocationRepository locationRepository;
     private final CalendarService calendarService;
 
@@ -207,12 +204,6 @@ public class MemoryService {
                         .memory(memory)
                         .build();
                 calendarMemoryRepository.save(calendarMemory);
-
-                // UserCalendarMemory 생성 및 저장
-                UserCalendarMemory userCalendarMemory = UserCalendarMemory.of(user, calendarMemory);
-                userCalendarMemoryRepository.save(userCalendarMemory);
-                // 커플의 총 허니를 증가시키고 저장
-                //couple.setTotal_honey(couple.getTotal_honey() + 1);
                 coupleRepository.save(couple);
 
             } catch (IOException e) {
