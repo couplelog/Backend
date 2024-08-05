@@ -71,7 +71,7 @@ public class MemoryFacade {
             HomeDto homeDto = new HomeDto(loveDays);
 
             // ApiResponseDto 객체 반환
-            return ResponseUtils.ok(homeDto, null);
+            return ResponseUtils.ok(homeDto, ErrorResponse.builder().status(200).message("요청 성공").build());
 
         } catch (ParseException e) {
             // ParseException 발생 시 처리 로직

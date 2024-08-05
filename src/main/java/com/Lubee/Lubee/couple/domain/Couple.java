@@ -33,8 +33,6 @@ public class Couple {
 
     private Long total_honey;
 
-    private int present_honey;
-
     @OneToMany(mappedBy = "couple", cascade = CascadeType.PERSIST)      // couple 삭제 -> user 즉시 변동
     private List<User> user = new ArrayList<>();
 
@@ -53,7 +51,6 @@ public class Couple {
         user.add(receiver);
         this.subscribe = false;
         this.total_honey = 0L;
-        this.present_honey = 0;
     }
 
     @PreRemove
