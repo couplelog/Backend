@@ -1,8 +1,13 @@
 # " Lubee "
 ## 추가 설명란
 
-
+---
 # 퍼즐 이미지 란
+![image](https://github.com/user-attachments/assets/69e10356-ee84-417b-981c-d28f167652c6)
+
+![image](https://github.com/user-attachments/assets/1e459908-d99f-461c-8216-9f1f9b24addf)
+![image](https://github.com/user-attachments/assets/d2534d6f-165f-4326-8ca1-8aabaf2006aa)
+
 ---
 # 배포 주소
 
