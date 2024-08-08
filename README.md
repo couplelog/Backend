@@ -56,11 +56,11 @@ Lubee로 당신의 사랑 이야기를 더 다채롭게 만들어보세요.
 
 ---
 
-## 화면 구성
-
 
 ## 백엔드 설계
 ### ERDCloud
+<img width="1015" alt="image" src="https://github.com/user-attachments/assets/a334d8fb-52a6-400a-9683-64601ddea398">
 
 
 ### API 명세서
+<a href = "https://www.notion.so/01bf62bb2bed48ed8967a32a675cb01c?v=a2fd34c54aea48208b5cdfbea964e41a">api
