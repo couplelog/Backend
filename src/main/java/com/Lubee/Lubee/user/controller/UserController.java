@@ -3,6 +3,7 @@ package com.Lubee.Lubee.user.controller;
 import com.Lubee.Lubee.common.api.ApiResponseDto;
 import com.Lubee.Lubee.common.api.SuccessResponse;
 import com.Lubee.Lubee.common.oauth.OauthService;
+import com.Lubee.Lubee.user.domain.User;
 import com.Lubee.Lubee.user.dto.SignupDto;
 import com.Lubee.Lubee.user.dto.TokenDto;
 import com.Lubee.Lubee.user.service.UserService;
@@ -58,6 +59,19 @@ public class UserController {
     public ApiResponseDto<SuccessResponse> resetDataBase()
     {
         return userService.resetDataBase();
+    }
+
+    @GetMapping("/logout")
+    public ApiResponseDto<SuccessResponse> logout(@AuthenticationPrincipal UserDetails userDetails) {
+        User user = userService.getUser(userDetails);
+        String accessToken = user.getAccessToken();
+        return oAuthService.logout(accessToken);
+    }
+    @GetMapping("/signout")
+    public ApiResponseDto<SuccessResponse> signOut(@AuthenticationPrincipal UserDetails userDetails) {
+        User user = userService.getUser(userDetails);
+        String accessToken = user.getAccessToken();
+        return oAuthService.signOut(user, accessToken);
     }
 
 }

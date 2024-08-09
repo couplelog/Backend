@@ -33,18 +33,16 @@ public class Couple {
 
     private Long total_honey;
 
-    private int present_honey;
-
-    @OneToMany(mappedBy = "couple", cascade = CascadeType.ALL)      // couple 삭제 -> user 즉시 변동
+    @OneToMany(mappedBy = "couple", cascade = CascadeType.PERSIST)      // couple 삭제 -> user 즉시 변동
     private List<User> user = new ArrayList<>();
 
     @OneToMany(mappedBy = "couple", cascade = CascadeType.ALL, orphanRemoval = true)  // cascade 추가
     private List<Calendar> calendars = new ArrayList<>();
 
-    @OneToMany(mappedBy = "couple")
+    @OneToMany(mappedBy = "couple",cascade = CascadeType.ALL)
     private List<DateComment> dateComments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "couple")
+    @OneToMany(mappedBy = "couple",cascade = CascadeType.ALL)
     private List<Anniversary> anniversaries = new ArrayList<>();
 
     @Builder
@@ -53,7 +51,6 @@ public class Couple {
         user.add(receiver);
         this.subscribe = false;
         this.total_honey = 0L;
-        this.present_honey = 0;
     }
 
     @PreRemove

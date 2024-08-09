@@ -20,9 +20,6 @@ import com.Lubee.Lubee.memory.dto.MemoryBaseDto;
 import com.Lubee.Lubee.user.domain.User;
 import com.Lubee.Lubee.user.repository.UserRepository;
 import com.Lubee.Lubee.user.service.UserService;
-import com.Lubee.Lubee.user_calendar_memory.repository.UserCalendarMemoryRepository;
-import com.Lubee.Lubee.user_memory.domain.UserMemory;
-import com.Lubee.Lubee.user_memory.repository.UserMemoryRepository;
 import com.Lubee.Lubee.user_memory_reaction.domain.UserMemoryReaction;
 import com.Lubee.Lubee.user_memory_reaction.repository.UserMemoryReactionRepository;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +42,6 @@ public class CalendarMemoryService {
     private final UserRepository userRepository;
     private final UserMemoryReactionRepository userMemoryReactionRepository;
     private final LocationRepository locationRepository;
-    private final UserMemoryRepository userMemoryRepository;
     private final UserService userService;
     private final CoupleService coupleService;
 
@@ -84,7 +80,6 @@ public class CalendarMemoryService {
                     if (calendarMemoryList != null) {
                         for (CalendarMemory calendarMemory : calendarMemoryList) {
                             Memory memory = calendarMemory.getMemory();
-                            UserMemory userMemory = userMemoryRepository.findUserMemoryByMemory(memory);
                             Optional<UserMemoryReaction> optional_reaction_first, optional_reaction_second;
                             Reaction reaction_first = null;
                             Reaction reaction_second = null;
@@ -108,12 +103,13 @@ public class CalendarMemoryService {
                             Profile writer_profile_first = null;
                             Profile writer_profile_second = null;
                             // MemoryBaseDto 생성
-                            if (user == userMemory.getUser())
+                            if (user == memory.getWriter())
                             {
-                                writer_profile_first = userMemory.getUser().getProfile();
+                                writer_profile_first = memory.getWriter().getProfile();
                             }
                             else {
-                                writer_profile_second = userMemory.getUser().getProfile();
+                                assert user_second != null;
+                                writer_profile_second = user_second.getProfile();
                             }
                             MemoryBaseDto memoryBaseDto = MemoryBaseDto.of(
                                     memory.getMemory_id(),
@@ -159,8 +155,6 @@ public class CalendarMemoryService {
         if (calendarMemoryList != null) {
             for (CalendarMemory calendarMemory : calendarMemoryList) {
                 Memory memory = calendarMemory.getMemory();
-                UserMemory userMemory = userMemoryRepository.findUserMemoryByMemory(memory);
-                System.out.println("memoru_id :" + memory.getMemory_id());
                 Reaction reaction_first = null;
                 Reaction reaction_second = null;
 
@@ -180,12 +174,13 @@ public class CalendarMemoryService {
                 Profile writer_profile_first = null;
                 Profile writer_profile_second = null;
                 // MemoryBaseDto 생성
-                if (user == userMemory.getUser())
+                if (user == memory.getWriter())
                 {
-                    writer_profile_first = userMemory.getUser().getProfile();
+                    writer_profile_first = memory.getWriter().getProfile();
                 }
                 else {
-                    writer_profile_second = userMemory.getUser().getProfile();
+                    assert user_second != null;
+                    writer_profile_second = user_second.getProfile();
                 }
                 MemoryBaseDto memoryBaseDto = MemoryBaseDto.of(
                         memory.getMemory_id(),

@@ -6,6 +6,7 @@ import com.Lubee.Lubee.calendar.repository.CalendarRepository;
 import com.Lubee.Lubee.calendar.service.CalendarService;
 import com.Lubee.Lubee.calendar_memory.service.CalendarMemoryService;
 import com.Lubee.Lubee.common.api.ApiResponseDto;
+import com.Lubee.Lubee.common.api.ErrorResponse;
 import com.Lubee.Lubee.common.api.ResponseUtils;
 import com.Lubee.Lubee.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,7 @@ public class CalendarController {
             @AuthenticationPrincipal UserDetails userDetails)
     {
         CalendarMemoryTotalListDto totalCalendarDtoList = calendarMemoryService.getYearlyMonthlyCalendarInfo(userDetails);
-        return ResponseUtils.ok(totalCalendarDtoList, null);
+        return ResponseUtils.ok(totalCalendarDtoList, ErrorResponse.builder().status(200).message("요청 성공").build());
     }
 
     @GetMapping("/specific_calendar")
@@ -40,7 +41,7 @@ public class CalendarController {
             @AuthenticationPrincipal UserDetails userDetails, @RequestParam int year, @RequestParam int month, @RequestParam int day)
     {
         CalendarMemoryDayDto calendarMemoryDayDto = calendarMemoryService.getDayCalendarInfo(userDetails, year, month, day);
-        return ResponseUtils.ok(calendarMemoryDayDto, null);
+        return ResponseUtils.ok(calendarMemoryDayDto, ErrorResponse.builder().status(200).message("요청 성공").build());
     }
 
 }

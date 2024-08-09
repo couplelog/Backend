@@ -21,14 +21,11 @@ import com.Lubee.Lubee.memory.dto.MemoryCreateRequestDto;
 import com.Lubee.Lubee.memory.repository.MemoryRepository;
 import com.Lubee.Lubee.user.domain.User;
 import com.Lubee.Lubee.user.repository.UserRepository;
-import com.Lubee.Lubee.user_calendar_memory.domain.UserCalendarMemory;
-import com.Lubee.Lubee.user_calendar_memory.repository.UserCalendarMemoryRepository;
-import com.Lubee.Lubee.user_memory.domain.UserMemory;
-import com.Lubee.Lubee.user_memory.repository.UserMemoryRepository;
 import com.Lubee.Lubee.user_memory_reaction.domain.UserMemoryReaction;
 import com.Lubee.Lubee.user_memory_reaction.repository.UserMemoryReactionRepository;
 import com.Lubee.Lubee.user_memory_reaction.service.UserMemoryReactionService;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -39,14 +36,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -60,11 +55,9 @@ public class MemoryService {
     private final UserMemoryReactionRepository userMemoryReactionRepository;
     private final AmazonS3Client amazonS3Client;
     private final UserRepository userRepository;
-    private final UserMemoryRepository userMemoryRepository;
     private final CoupleRepository coupleRepository;
     private final CalendarRepository calendarRepository;
     private final CalendarMemoryRepository calendarMemoryRepository;
-    private final UserCalendarMemoryRepository userCalendarMemoryRepository;
     private final LocationRepository locationRepository;
     private final CalendarService calendarService;
 
@@ -134,12 +127,12 @@ public class MemoryService {
 //    }
 
     @Transactional
-    public void createMemory(UserDetails loginUser, MultipartFile file, Long location_id, int year, int month, int day) {
+    public void createMemory(User user, MultipartFile file, Long location_id, int year, int month, int day) {
 
         // 사용자 정보 가져오기
-        User user = userRepository.findByUsername(loginUser.getUsername()).orElseThrow(
-                () -> new RestApiException(ErrorType.NOT_FOUND_USER)
-        );
+//        User user = userRepository.findByUsername(loginUser.getUsername()).orElseThrow(
+//                () -> new RestApiException(ErrorType.NOT_FOUND_USER)
+//        );
         Couple couple = coupleRepository.findCoupleByUser(user).orElseThrow(
                 () -> new RestApiException(ErrorType.NOT_FOUND_COUPLE)
         );
@@ -152,7 +145,22 @@ public class MemoryService {
                 {
                     throw new RestApiException(ErrorType.TODAY_MEMORY_END);
                 }
-                String fileName = file.getOriginalFilename();
+                String originalFilename = file.getOriginalFilename();
+                String fileExtension = "";
+                assert originalFilename != null;
+                int dotIndex = originalFilename.lastIndexOf('.');
+                if (dotIndex > 0) {
+                    fileExtension = originalFilename.substring(dotIndex);
+                }
+                String baseFileName = originalFilename.substring(0, dotIndex);
+
+                // 현재 날짜와 시간으로 타임스탬프 생성
+                LocalDateTime now = LocalDateTime.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+                String timestamp = now.format(formatter);
+
+                // 새로운 파일 이름 생성
+                String fileName = baseFileName + "_" + timestamp + fileExtension;
                 String folder = "/pictures"; // 저장할 폴더
                 String fileUrl = "https://" + bucket + ".s3." + region + ".amazonaws.com" + folder + "/" + fileName;
 
@@ -177,7 +185,7 @@ public class MemoryService {
                 memory.setTime(date); // 현재 날짜 설정
                 memory.setPicture(fileUrl);
                 memory.setCouple(couple);
-
+                memory.setWriter(user);
                 memory = memoryRepository.save(memory);
 
                 // Calendar 존재 확인 및 생성
@@ -196,17 +204,6 @@ public class MemoryService {
                         .memory(memory)
                         .build();
                 calendarMemoryRepository.save(calendarMemory);
-
-                // UserMemory 생성 및 저장
-                UserMemory userMemory = UserMemory.of(user, memory);
-                userMemoryRepository.save(userMemory);
-                memory.setUserMemory(userMemory);
-                // UserCalendarMemory 생성 및 저장
-                UserCalendarMemory userCalendarMemory = UserCalendarMemory.of(user, calendarMemory);
-                userCalendarMemoryRepository.save(userCalendarMemory);
-                memoryRepository.save(memory);
-                // 커플의 총 허니를 증가시키고 저장
-                //couple.setTotal_honey(couple.getTotal_honey() + 1);
                 coupleRepository.save(couple);
 
             } catch (IOException e) {
@@ -219,13 +216,13 @@ public class MemoryService {
     }
 
     @Transactional
-    public MemoryBaseDto getOneMemory(UserDetails loginUser, Long memoryId) {
+    public MemoryBaseDto getOneMemory(UserDetails  loginUser,  Long memoryId) {
 
         User user = userRepository.findByUsername(loginUser.getUsername()).orElseThrow(
                 () -> new RestApiException(ErrorType.NOT_FOUND));
+
         Memory memory = memoryRepository.findById(memoryId).orElseThrow(
                 () -> new RestApiException(ErrorType.NOT_FOUND));
-        UserMemory userMemory = userMemoryRepository.findUserMemoryByMemory(memory);
         Optional<UserMemoryReaction> optional_reaction_first, optional_reaction_second;
         Reaction reaction_first = null;
         Reaction reaction_second = null;
@@ -253,12 +250,13 @@ public class MemoryService {
         Profile writer_profile_first = null;
         Profile writer_profile_second = null;
         // MemoryBaseDto 생성
-        if (user == userMemory.getUser())
+        if (user == memory.getWriter())
         {
-            writer_profile_first = userMemory.getUser().getProfile();
+            writer_profile_first = memory.getWriter().getProfile();
         }
         else {
-            writer_profile_second = userMemory.getUser().getProfile();
+            assert user_second != null;
+            writer_profile_second = user_second.getProfile();
         }
         Location location = memory.getLocation();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH시-mm분");
@@ -291,6 +289,25 @@ public class MemoryService {
             }
         }
         return null; // 적절한 Couple을 찾지 못한 경우 null 반환
+    }
+
+    public void deleteS3(Memory memory) {
+        String url = memory.getPicture();
+
+        // URL에서 파일명 추출
+        String[] parts = url.split("/");  // URL을 '/'로 나누기
+        String fileName = parts[parts.length - 1];  // 마지막 부분을 가져오기
+
+        // S3 객체의 키를 생성
+        String key = "pictures/" + fileName;  // S3에서 객체의 키를 구성합니다. 'pictures/' 폴더는 URL의 폴더 구조와 일치해야 합니다.
+
+        try {
+            // S3에서 객체 삭제
+            amazonS3Client.deleteObject(bucket, key);
+            System.out.println("Deleted S3 object with key: " + key);
+        } catch (AmazonS3Exception e) {
+            log.debug("Error deleting S3 object: " + e);
+        }
     }
 
 

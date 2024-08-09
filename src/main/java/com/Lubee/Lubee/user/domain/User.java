@@ -7,9 +7,8 @@ import com.Lubee.Lubee.couple.domain.Couple;
 import com.Lubee.Lubee.date_comment.domain.DateComment;
 import com.Lubee.Lubee.enumset.Profile;
 import com.Lubee.Lubee.firebase.domain.FireBase;
+import com.Lubee.Lubee.memory.domain.Memory;
 import com.Lubee.Lubee.user.dto.SignupDto;
-import com.Lubee.Lubee.user_calendar_memory.domain.UserCalendarMemory;
-import com.Lubee.Lubee.user_memory.domain.UserMemory;
 import com.Lubee.Lubee.user_memory_reaction.domain.UserMemoryReaction;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
@@ -58,26 +57,26 @@ public class User extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<DateComment> dateComments = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-    private List<UserMemory> userMemories = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user")
-    private List<UserCalendarMemory> userCalendarMemories = new ArrayList<>();
 
     @ManyToOne(optional = true)
     @JoinColumn(name = "couple_id")
     private Couple couple;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserMemoryReaction> userMemoryReactions = new ArrayList<>();
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private FireBase fireBase;
 
     private LoginType loginType;
+
+    @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Memory> memories = new ArrayList<>();
+
+    // 카카오에서 발급해주는 access 토큰 -> 로그아웃이나 탈퇴에서 사용 되는 것
+    private String accessToken;
 
     private String kakaoRefreshToken;
 

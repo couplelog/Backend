@@ -50,5 +50,10 @@ public class CoupleController {
 
         return coupleService.getCoupleInfo(userDetails);
     }
+    @GetMapping("/break")
+    public ApiResponseDto<SuccessResponse> breakCouple(@AuthenticationPrincipal UserDetails userDetails)
+    {
+        return coupleService.breakCouple(userDetails);
+    }
 
 }
